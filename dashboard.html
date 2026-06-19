@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GHOST · Live Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #060608;
+    --surface: #0d0d10;
+    --surface2: #131318;
+    --surface3: #1a1a22;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --cyan: #00FFD1;
+    --cyan-dim: rgba(0,255,209,0.1);
+    --white: #f4f4f6;
+    --muted: #6b6b78;
+    --muted2: #9898a8;
+    --amber: #ffaa00;
+    --purple: #a070ff;
+    --red: #ff5555;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* TOPBAR */
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    background: rgba(6,6,8,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topbar-left { display: flex; align-items: center; gap: 1.5rem; }
+
+  .topbar-logo {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cyan);
+    letter-spacing: 0.15em;
+    text-decoration: none;
+  }
+
+  .topbar-divider { width: 1px; height: 20px; background: var(--border2); }
+
+  .topbar-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 1rem; }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--cyan);
+    background: var(--cyan-dim);
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(0,255,209,0.2);
+  }
+
+  .pulse-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--cyan);
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.6); }
+  }
+
+  .back-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted2);
+    text-decoration: none;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .back-btn:hover { color: var(--white); border-color: var(--border2); }
+
+  /* LAYOUT */
+  .layout {
+    padding-top: 56px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+  }
+
+  /* METRICS ROW */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .metric {
+    background: var(--surface);
+    padding: 1.25rem 1.5rem;
+    transition: background 0.2s;
+  }
+  .metric:hover { background: var(--surface2); }
+
+  .metric-label {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .metric-value {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1;
+  }
+  .metric-value.cyan { color: var(--cyan); }
+  .metric-value.amber { color: var(--amber); }
+  .metric-value.purple { color: var(--purple); }
+
+  .metric-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* MAIN GRID */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 1px;
+    background: var(--border);
+    flex: 1;
+  }
+
+  /* PANELS */
+  .panel {
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .panel-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface2);
+    flex-shrink: 0;
+  }
+
+  .panel-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .panel-badge {
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 3px 9px;
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+  }
+  .pb-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  .pb-purple { background: rgba(160,112,255,0.12); color: var(--purple); }
+  .pb-amber { background: rgba(255,170,0,0.1); color: var(--amber); }
+
+  .panel-body { flex: 1; overflow-y: auto; }
+  .panel-body::-webkit-scrollbar { width: 3px; }
+  .panel-body::-webkit-scrollbar-thumb { background: var(--border2); }
+
+  /* INFERENCE LOG */
+  .inference-list { padding: 0; }
+
+  .inference-item {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    transition: background 0.2s;
+    animation: fadein 0.3s ease;
+  }
+  .inference-item:hover { background: var(--surface2); }
+
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .inf-number {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    min-width: 36px;
+  }
+
+  .inf-details {}
+  .inf-title {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--white);
+    margin-bottom: 3px;
+  }
+  .inf-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    display: flex;
+    gap: 12px;
+  }
+  .inf-meta span { color: var(--muted2); }
+  .inf-meta .c { color: var(--cyan); }
+  .inf-meta .a { color: var(--amber); }
+  .inf-meta .p { color: var(--purple); }
+
+  .inf-status {
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+  }
+  .status-ok { background: var(--cyan-dim); color: var(--cyan); border: 1px solid rgba(0,255,209,0.2); }
+  .status-storing { background: rgba(160,112,255,0.1); color: var(--purple); border: 1px solid rgba(160,112,255,0.2); }
+  .status-pending { background: rgba(255,170,0,0.1); color: var(--amber); border: 1px solid rgba(255,170,0,0.2); }
+
+  /* SIDEBAR */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  /* WALLET CARD */
+  .wallet-card {
+    background: var(--surface);
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .wallet-card-title {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .wallet-balance-big {
+    font-family: var(--mono);
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--cyan);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .wallet-addr {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+    word-break: break-all;
+  }
+
+  .wallet-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .wr-key { color: var(--muted); }
+  .wr-val { color: var(--white); }
+  .wr-val.c { color: var(--cyan); }
+  .wr-val.a { color: var(--amber); }
+  .wr-val.r { color: var(--red); }
+
+  /* STATUS CARD */
+  .status-card {
+    background: var(--surface);
+    padding: 1.5rem;
+    flex: 1;
+  }
+
+  .status-card-title {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .status-row:last-child { border-bottom: none; }
+  .sr-key { color: var(--muted2); }
+  .sr-val { font-weight: 500; }
+  .sr-val.c { color: var(--cyan); }
+  .sr-val.a { color: var(--amber); }
+  .sr-val.r { color: var(--red); }
+  .sr-val.w { color: var(--white); }
+
+  /* ATTESTATION MINI */
+  .attest-mini {
+    background: var(--black);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 1rem 0 0;
+  }
+
+  .attest-mini-header {
+    background: var(--surface2);
+    padding: 8px 12px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .attest-mini-body { padding: 10px 12px; }
+
+  .am-row {
+    display: flex;
+    gap: 8px;
+    padding: 4px 0;
+    font-family: var(--mono);
+    font-size: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .am-row:last-child { border-bottom: none; }
+  .am-key { color: var(--muted); flex: 0 0 100px; }
+  .am-val { color: var(--white); word-break: break-all; font-size: 9.5px; }
+  .am-val.c { color: var(--cyan); }
+  .am-val.a { color: var(--amber); }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    .metrics-row { grid-template-columns: repeat(3, 1fr); }
+    .main-grid { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="topbar-logo">GHOST</a>
+    <div class="topbar-divider"></div>
+    <span class="topbar-title">LIVE AGENT MONITOR · 0G TESTNET</span>
+  </div>
+  <div class="topbar-right">
+    <div class="live-badge">
+      <div class="pulse-dot"></div>
+      AGENT RUNNING
+    </div>
+    <a href="index.html" class="back-btn">← BACK TO SITE</a>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- METRICS -->
+  <div class="metrics-row">
+    <div class="metric">
+      <div class="metric-label">Total Inferences</div>
+      <div class="metric-value cyan" id="m-inferences">127</div>
+      <div class="metric-sub">TEE verified</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Agent Balance</div>
+      <div class="metric-value" id="m-balance">18.437</div>
+      <div class="metric-sub">0G tokens</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Total Spent</div>
+      <div class="metric-value amber" id="m-spent">0.152</div>
+      <div class="metric-sub">0G autonomous</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Storage Written</div>
+      <div class="metric-value purple" id="m-storage">312</div>
+      <div class="metric-sub">KB on 0G</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Admin Keys</div>
+      <div class="metric-value cyan">0</div>
+      <div class="metric-sub">No owner</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Next Cycle</div>
+      <div class="metric-value" id="m-next">—</div>
+      <div class="metric-sub">On-chain trigger</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-grid">
+
+    <!-- INFERENCE LOG -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Inference History · All TEE Verified</span>
+        <span class="panel-badge pb-cyan">TEEML</span>
+      </div>
+      <div class="panel-body">
+        <div class="inference-list" id="inference-list"></div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- WALLET -->
+      <div class="wallet-card">
+        <div class="wallet-card-title">Agent Wallet · 0G Chain</div>
+        <div class="wallet-balance-big" id="s-balance">18.437</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--cyan);margin-bottom:4px;">0G TOKENS</div>
+        <div class="wallet-addr">Contract: 0x4a9F3c8d2E1b...c38B<br>No human signing authority</div>
+        <div class="wallet-row">
+          <span class="wr-key">Total earned</span>
+          <span class="wr-val a" id="s-earned">+0.500 0G</span>
+        </div>
+        <div class="wallet-row">
+          <span class="wr-key">Total spent</span>
+          <span class="wr-val r" id="s-spent">-0.152 0G</span>
+        </div>
+        <div class="wallet-row">
+          <span class="wr-key">Avg cost/inference</span>
+          <span class="wr-val">0.0012 0G</span>
+        </div>
+        <div class="wallet-row">
+          <span class="wr-key">Remaining cycles</span>
+          <span class="wr-val c" id="s-cycles">15,364</span>
+        </div>
+      </div>
+
+      <!-- STATUS -->
+      <div class="status-card">
+        <div class="status-card-title">Agent Status</div>
+
+        <div class="status-row">
+          <span class="sr-key">Owner</span>
+          <span class="sr-val c">NONE</span>
+        </div>
+        <div class="status-row">
+          <span class="sr-key">Kill switch</span>
+          <span class="sr-val c">NONE</span>
+        </div>
+        <div class="status-row">
+          <span class="sr-key">Upgradeable</span>
+          <span class="sr-val c">FALSE</span>
+        </div>
+        <div class="status-row">
+          <span class="sr-key">Compute</span>
+          <span class="sr-val w">0G COMPUTE · TEEML</span>
+        </div>
+        <div class="status-row">
+          <span class="sr-key">Storage</span>
+          <span class="sr-val w">0G STORAGE</span>
+        </div>
+        <div class="status-row">
+          <span class="sr-key">Settlement</span>
+          <span class="sr-val w">0G CHAIN</span>
+        </div>
+        <div class="status-row">
+          <span class="sr-key">Human authorized</span>
+          <span class="sr-val c">FALSE</span>
+        </div>
+        <div class="status-row">
+          <span class="sr-key">Running since</span>
+          <span class="sr-val a">Block #1,800,000</span>
+        </div>
+
+        <div class="attest-mini">
+          <div class="attest-mini-header">LATEST TEE ATTESTATION</div>
+          <div class="attest-mini-body">
+            <div class="am-row">
+              <div class="am-key">verifiability</div>
+              <div class="am-val c">TEEML · valid</div>
+            </div>
+            <div class="am-row">
+              <div class="am-key">enclave</div>
+              <div class="am-val">AMD SEV-SNP</div>
+            </div>
+            <div class="am-row">
+              <div class="am-key">tee_hash</div>
+              <div class="am-val" style="color:var(--muted);font-size:9px;">e3b0c4...52b855</div>
+            </div>
+            <div class="am-row">
+              <div class="am-key">tampered</div>
+              <div class="am-val c">FALSE</div>
+            </div>
+            <div class="am-row">
+              <div class="am-key">human_auth</div>
+              <div class="am-val c">FALSE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  let inferences = 127;
+  let balance = 18.437;
+  let spent = 0.152;
+  let storageKB = 312;
+  let earned = 0.5;
+  let itemIdx = 0;
+
+  const models = ['deepseek-v3', 'qwen3-72b', 'glm-5', 'deepseek-v3', 'deepseek-v3'];
+  const statuses = ['VERIFIED', 'VERIFIED', 'STORING', 'VERIFIED', 'ANCHORED'];
+  const statusClasses = ['status-ok', 'status-ok', 'status-storing', 'status-ok', 'status-ok'];
+
+  function pad(n) { return n < 10 ? '0'+n : ''+n; }
+  function getTime() {
+    const d = new Date();
+    return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+
+  function getDate() {
+    const d = new Date();
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  }
+
+  function fakeHash() {
+    const chars = '0123456789abcdef';
+    return Array.from({length: 12}, () => chars[Math.floor(Math.random()*16)]).join('');
+  }
+
+  const list = document.getElementById('inference-list');
+
+  function addInference() {
+    const model = models[itemIdx % models.length];
+    const statusText = statuses[itemIdx % statuses.length];
+    const statusClass = statusClasses[itemIdx % statusClasses.length];
+    const cost = (0.0010 + Math.random() * 0.0005).toFixed(4);
+    const blockNum = (1847291 + inferences).toLocaleString();
+
+    const el = document.createElement('div');
+    el.className = 'inference-item';
+    el.innerHTML = `
+      <div class="inf-number">#${inferences}</div>
+      <div class="inf-details">
+        <div class="inf-title">Inference · ${model} · TEEML attestation generated</div>
+        <div class="inf-meta">
+          <span>${getDate()} ${getTime()}</span>
+          <span class="c">TEE: AMD SEV-SNP</span>
+          <span class="a">Cost: ${cost} 0G</span>
+          <span class="p">Block: #${blockNum}</span>
+          <span>Hash: ${fakeHash()}...</span>
+        </div>
+      </div>
+      <div class="inf-status ${statusClass}">${statusText}</div>
+    `;
+
+    list.insertBefore(el, list.firstChild);
+
+    if (list.children.length > 40) list.removeChild(list.lastChild);
+
+    inferences++;
+    balance -= parseFloat(cost);
+    spent += parseFloat(cost);
+    storageKB += 3.5 + Math.random() * 2;
+
+    updateMetrics();
+    itemIdx++;
+  }
+
+  function updateMetrics() {
+    document.getElementById('m-inferences').textContent = inferences;
+    document.getElementById('m-balance').textContent = balance.toFixed(3);
+    document.getElementById('m-spent').textContent = spent.toFixed(3);
+    document.getElementById('m-storage').textContent = Math.round(storageKB);
+    document.getElementById('s-balance').textContent = balance.toFixed(3);
+    document.getElementById('s-spent').textContent = '-' + spent.toFixed(3) + ' 0G';
+    document.getElementById('s-cycles').textContent = Math.floor(balance / 0.0012).toLocaleString();
+  }
+
+  function updateNextRun() {
+    const el = document.getElementById('m-next');
+    if (!el) return;
+    const now = new Date();
+    const mins = 5 - (now.getMinutes() % 6);
+    const secs = 60 - now.getSeconds();
+    el.textContent = `${mins}m ${secs}s`;
+  }
+
+  // Seed initial inferences
+  for (let i = 0; i < 8; i++) {
+    inferences = 120 + i;
+    addInference();
+  }
+
+  // Live updates
+  setInterval(addInference, 3200);
+  setInterval(updateNextRun, 1000);
+  updateNextRun();
+</script>
+</body>
+</html>
