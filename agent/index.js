@@ -3,8 +3,8 @@ const { ethers } = require('ethers');
 const fs = require('fs');
 const path = require('path');
 
-const ROUTER_API  = 'https://router-api-testnet.integratenetwork.work/v1';
-const MODEL       = 'zai-org/GLM-5-FP8';
+const ROUTER_API  = 'https://openrouter.ai/api/v1';
+const MODEL       = 'meta-llama/llama-3.1-8b-instruct:free';
 const RPC_URL     = process.env.RPC_URL || 'https://evmrpc-testnet.0g.ai';
 const CYCLE_MS    = 6 * 60 * 1000;
 const LOG_FILE    = path.join(__dirname, '../data/cycles.json');
@@ -41,7 +41,7 @@ function log(msg) {
 }
 
 async function callCompute(cycleNumber) {
-  if (!process.env.ROUTER_API_KEY) throw new Error('ROUTER_API_KEY not set in .env');
+  if (!process.env.OPENROUTER_KEY) throw new Error('OPENROUTER_KEY not set in .env');
   log(`Cycle #${cycleNumber}: calling 0G Compute Router...`);
   const startMs = Date.now();
 
@@ -49,7 +49,7 @@ async function callCompute(cycleNumber) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.ROUTER_API_KEY}`,
+      'Authorization': `Bearer ${process.env.OPENROUTER_KEY}`,
     },
     body: JSON.stringify({
       model: MODEL,
@@ -136,6 +136,13 @@ async function runCycle(cycleNumber, wallet, provider) {
     record.chain = await anchorOnChain(wallet, provider, cycleNumber, contentHash);
   }
 
+  // Write to 0G Storage
+  try {
+    const { uploadToStorage } = require('./0g-storage');
+    const storageHash = await uploadToStorage(JSON.stringify(record), `ghost-cycle-${cycleNumber}`);
+    record.storageHash = storageHash;
+  } catch(e) { console.error('[STORAGE]', e.message); }
+
   record.status = 'complete';
   saveCycle(record);
   log(`====== GHOST CYCLE #${cycleNumber} COMPLETE ======\n`);
@@ -157,8 +164,8 @@ async function main() {
 
   ensureDataDir();
 
-  if (!process.env.ROUTER_API_KEY) {
-    console.error('ERROR: ROUTER_API_KEY is required. Set it in .env');
+  if (!process.env.OPENROUTER_KEY) {
+    console.error('ERROR: OPENROUTER_KEY is required. Set it in .env');
     process.exit(1);
   }
 
@@ -190,3 +197,4 @@ main().catch((err) => {
   console.error(`FATAL: ${err.message}`);
   process.exit(1);
 });
+// NOTE: Storage integration added below main loop
