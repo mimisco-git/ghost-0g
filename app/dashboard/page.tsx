@@ -170,7 +170,7 @@ export default function Dashboard() {
               <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, fontWeight: 600, color: MUTED, letterSpacing: "0.14em", textTransform: "uppercase" as const }}>Inference Cycles · 0G Compute Router</span>
               <div style={{ display: "flex", gap: 8 }}>
                 <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, color: CYAN, padding: "3px 10px", borderRadius: 5, background: `${CYAN}0c`, border: `0.5px solid ${CYAN}30` }}>{cycles.length} total</span>
-                <a href={`https://storagescan.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, color: PURPLE, padding: "3px 10px", borderRadius: 5, background: `${PURPLE}0c`, border: `0.5px solid ${PURPLE}30`, textDecoration: "none" }}>StorageScan →</a>
+                <a href={`https://storagescan-galileo.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, color: PURPLE, padding: "3px 10px", borderRadius: 5, background: `${PURPLE}0c`, border: `0.5px solid ${PURPLE}30`, textDecoration: "none" }}>StorageScan →</a>
               </div>
             </div>
 
@@ -193,7 +193,7 @@ export default function Dashboard() {
                       Root hash:<br />
                       <span style={{ color: PURPLE, wordBreak: "break-all" as const, fontSize: 9 }}>{storageHash}</span>
                     </div>
-                    <a href={`https://storagescan.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ display: "inline-block", marginTop: 12, fontFamily: "JetBrains Mono, monospace", fontSize: 10, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>View on StorageScan →</a>
+                    <a href={`https://storagescan-galileo.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ display: "inline-block", marginTop: 12, fontFamily: "JetBrains Mono, monospace", fontSize: 10, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>View on StorageScan →</a>
                   </div>
                 </div>
               )}
@@ -254,7 +254,7 @@ export default function Dashboard() {
                 Latest root hash:<br />
                 <span style={{ color: PURPLE, wordBreak: "break-all", fontSize: 8.5 }}>{storageHash}</span>
               </div>
-              <a href={`https://storagescan.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ display: "block", padding: "10px 14px", borderRadius: 9, background: `${PURPLE}08`, border: `0.5px solid ${PURPLE}28`, fontFamily: "JetBrains Mono, monospace", fontSize: 10.5, fontWeight: 600, color: PURPLE, textDecoration: "none", textAlign: "center" }}>View on StorageScan →</a>
+              <a href={`https://storagescan-galileo.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ display: "block", padding: "10px 14px", borderRadius: 9, background: `${PURPLE}08`, border: `0.5px solid ${PURPLE}28`, fontFamily: "JetBrains Mono, monospace", fontSize: 10.5, fontWeight: 600, color: PURPLE, textDecoration: "none", textAlign: "center" }}>View on StorageScan →</a>
               <div style={{ marginTop: 14 }}>
                 {[["Replicated","TRUE",CYAN],["Deletable","FALSE",CYAN],["Permanent","TRUE",CYAN],["Network","0G Galileo",WHITE]].map(([k,v,c]) => <Row key={k} label={k} value={v} color={c} />)}
               </div>
@@ -284,7 +284,7 @@ export default function Dashboard() {
                   <div style={{ marginTop: 16 }}>
                     <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, fontWeight: 600, color: MUTED, letterSpacing: "0.12em", textTransform: "uppercase" as const, display: "block", marginBottom: 8 }}>Storage Hash</span>
                     <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 8.5, color: PURPLE, wordBreak: "break-all", lineHeight: 1.75 }}>{selected.storageHash}</div>
-                    <a href={`https://storagescan.0g.ai/tx?hash=${selected.storageHash}`} target="_blank" style={{ display: "inline-block", marginTop: 10, fontFamily: "JetBrains Mono, monospace", fontSize: 10, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>View on StorageScan →</a>
+                    <a href={`https://storagescan-galileo.0g.ai/tx?hash=${selected.storageHash}`} target="_blank" style={{ display: "inline-block", marginTop: 10, fontFamily: "JetBrains Mono, monospace", fontSize: 10, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>View on StorageScan →</a>
                   </div>
                 )}
 

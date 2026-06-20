@@ -427,7 +427,7 @@ export default function Home() {
             </div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px", borderTop: `0.5px solid ${BORDER}` }}>
               <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 10, color: MUTED }}>0G Storage Network · Galileo Testnet</span>
-              <a href={`https://storagescan.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 11, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>View on StorageScan →</a>
+              <a href={`https://storagescan-galileo.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 11, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>View on StorageScan →</a>
             </div>
           </Card>
         </R>
@@ -466,7 +466,7 @@ export default function Home() {
               </div>
               <div style={{ display: "flex", gap: 20, padding: "14px 24px", borderTop: `0.5px solid ${BORDER}`, justifyContent: "space-between" }}>
                 <a href="https://chainscan-galileo.0g.ai" target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 11, color: CYAN, textDecoration: "none", fontWeight: 600 }}>Verify on 0G Chain →</a>
-                <a href={`https://storagescan.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 11, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>Verify on StorageScan →</a>
+                <a href={`https://storagescan-galileo.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 11, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>Verify on StorageScan →</a>
               </div>
             </Card>
           </div>
@@ -540,7 +540,7 @@ export default function Home() {
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, fontWeight: 600, letterSpacing: "0.18em", color: MUTED, textTransform: "uppercase" as const, marginBottom: 4 }}>Links</span>
-              {[["GitHub","https://github.com/mimisco-git/ghost-0g"],["0G Docs","https://docs.0g.ai"],["Zero Cup","https://0g.ai/arena/zero-cup"],["StorageScan","https://storagescan.0g.ai"]].map(([l,h]) => <a key={l} href={h} target="_blank" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>{l}</a>)}
+              {[["GitHub","https://github.com/mimisco-git/ghost-0g"],["0G Docs","https://docs.0g.ai"],["Zero Cup","https://0g.ai/arena/zero-cup"],["StorageScan","https://storagescan-galileo.0g.ai"]].map(([l,h]) => <a key={l} href={h} target="_blank" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>{l}</a>)}
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
