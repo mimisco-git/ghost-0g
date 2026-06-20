@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
+import GhostHero, { InteractiveGhost } from "@/components/GhostHero";
 
 // ── DESIGN TOKENS ──────────────────────────────────────────────────────────
 const BG       = "#030712";
@@ -146,25 +147,15 @@ export default function Home() {
   const [cycles, setCycles] = useState(0);
   const [storageHash] = useState("0xd967a299b7e5f34da189b0e4d5c146bf4cee5980265374cbd0d2e808fe52ba5a");
   const [lines, setLines] = useState<{ tag: string; tc: string; msg: string; time: string }[]>([]);
+  const [loaderDone, setLoaderDone] = useState(false);
   const feedRef = useRef<HTMLDivElement>(null);
   const idxRef = useRef(0);
-  const ghostRef = useRef<HTMLDivElement>(null);
 
   const { scrollY } = useScroll();
   const rawY = useTransform(scrollY, [0, 700], [0, -80]);
   const heroY = useSpring(rawY, { stiffness: 80, damping: 22 });
 
-  useEffect(() => {
-    const onMouse = (e: MouseEvent) => {
-      if (!ghostRef.current) return;
-      const r = ghostRef.current.getBoundingClientRect();
-      const dx = (e.clientX - r.left - r.width/2) / r.width;
-      const dy = (e.clientY - r.top - r.height/2) / r.height;
-      ghostRef.current.style.transform = `perspective(1200px) rotateX(${dy*8}deg) rotateY(${-dx*8}deg)`;
-    };
-    window.addEventListener("mousemove", onMouse, { passive: true });
-    return () => window.removeEventListener("mousemove", onMouse);
-  }, []);
+  // scroll handled by framer spring
 
   useEffect(() => {
     async function load() {
@@ -228,6 +219,9 @@ export default function Home() {
 
   return (
     <div style={{ background: BG, color: WHITE, fontFamily: "-apple-system, 'SF Pro Display', Inter, 'Helvetica Neue', sans-serif", WebkitFontSmoothing: "antialiased", overflowX: "hidden", minHeight: "100vh" }}>
+      <AnimatePresence>
+        {!loaderDone && <GhostHero onDone={() => setLoaderDone(true)} />}
+      </AnimatePresence>
       <Particles />
 
       {/* ── NAV ── */}
@@ -286,34 +280,14 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Right: Ghost image */}
-          <motion.div initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.3, delay: 0.3, ease: [0.16,1,0.3,1] }} style={{ display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-            {/* Glow */}
-            <div style={{ position: "absolute", width: "80%", height: "80%", borderRadius: "50%", background: `radial-gradient(ellipse, ${CYAN}15 0%, transparent 70%)`, filter: "blur(36px)", animation: "gB 5s ease-in-out infinite", pointerEvents: "none" }} />
-
-            {/* Rings */}
-            {[94, 112, 128].map((s, i) => (
-              <div key={i} style={{ position: "absolute", width: `${s}%`, height: `${s}%`, borderRadius: "50%", border: `0.5px solid rgba(0,255,209,${0.1 - i*0.03})`, animation: i===0?"rA 24s linear infinite":i===1?"rB 34s linear infinite":"none", pointerEvents: "none" }} />
-            ))}
-
-            {/* Ghost */}
-            <div style={{ position: "relative", zIndex: 2, width: "clamp(280px,34vw,440px)", aspectRatio: "1", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div ref={ghostRef} style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", transformStyle: "preserve-3d", transition: "transform 0.12s ease-out", animation: "gF 8s ease-in-out infinite", willChange: "transform" }}>
-                <img src="/logo2.png" alt="GHOST" style={{ width: "84%", height: "84%", objectFit: "contain", mixBlendMode: "screen", filter: `drop-shadow(0 0 40px ${CYAN}44) drop-shadow(0 0 80px ${CYAN}18) brightness(1.08)`, pointerEvents: "none", userSelect: "none" }} />
-              </div>
-
-              {/* Badges */}
-              {[
-                { top: "8%", left: "-8%", label: "TEE Status", val: "Enclave Active", color: CYAN },
-                { bottom: "14%", right: "-8%", label: "Human Authorized", val: "FALSE", color: CYAN },
-                { top: "42%", right: "-12%", label: "Storage", val: "0G Network", color: PURPLE },
-              ].map((b, i) => (
-                <div key={i} style={{ position: "absolute", top: b.top, bottom: (b as any).bottom, left: b.left, right: (b as any).right, padding: "10px 16px", borderRadius: 10, background: "rgba(3,7,18,0.85)", backdropFilter: "blur(20px)", border: `0.5px solid ${b.color}30`, fontFamily: "JetBrains Mono, monospace", boxShadow: `0 8px 24px rgba(0,0,0,0.5), 0 0 0 0.5px ${b.color}15 inset` }}>
-                  <div style={{ fontSize: 8.5, color: MUTED, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 3 }}>{b.label}</div>
-                  <div style={{ fontSize: 12, color: b.color, fontWeight: 600 }}>{b.val}</div>
-                </div>
-              ))}
-            </div>
+          {/* Right: Interactive Ghost with eye tracking + sequencer loader */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.3, delay: 0.3, ease: [0.16,1,0.3,1] }}
+            style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+          >
+            <InteractiveGhost size={440} />
           </motion.div>
         </motion.div>
 
@@ -427,7 +401,7 @@ export default function Home() {
             </div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px", borderTop: `0.5px solid ${BORDER}` }}>
               <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 10, color: MUTED }}>0G Storage Network · Galileo Testnet</span>
-              <a href={"https://storagescan-galileo.0g.ai/submission/126985"} target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 11, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>View on StorageScan →</a>
+              <a href={`https://storagescan.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 11, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>View on StorageScan →</a>
             </div>
           </Card>
         </R>
@@ -466,7 +440,7 @@ export default function Home() {
               </div>
               <div style={{ display: "flex", gap: 20, padding: "14px 24px", borderTop: `0.5px solid ${BORDER}`, justifyContent: "space-between" }}>
                 <a href="https://chainscan-galileo.0g.ai" target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 11, color: CYAN, textDecoration: "none", fontWeight: 600 }}>Verify on 0G Chain →</a>
-                <a href={"https://storagescan-galileo.0g.ai/submission/126985"} target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 11, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>Verify on StorageScan →</a>
+                <a href={`https://storagescan.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 11, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>Verify on StorageScan →</a>
               </div>
             </Card>
           </div>
@@ -540,7 +514,7 @@ export default function Home() {
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, fontWeight: 600, letterSpacing: "0.18em", color: MUTED, textTransform: "uppercase" as const, marginBottom: 4 }}>Links</span>
-              {[["GitHub","https://github.com/mimisco-git/ghost-0g"],["0G Docs","https://docs.0g.ai"],["Zero Cup","https://0g.ai/arena/zero-cup"],["StorageScan","https://storagescan-galileo.0g.ai"]].map(([l,h]) => <a key={l} href={h} target="_blank" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>{l}</a>)}
+              {[["GitHub","https://github.com/mimisco-git/ghost-0g"],["0G Docs","https://docs.0g.ai"],["Zero Cup","https://0g.ai/arena/zero-cup"],["StorageScan","https://storagescan.0g.ai"]].map(([l,h]) => <a key={l} href={h} target="_blank" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>{l}</a>)}
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
