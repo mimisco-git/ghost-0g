@@ -64,22 +64,77 @@ function Particles() {
   return <canvas ref={ref} style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none"}} />;
 }
 
-// ── GLASS CARD ──────────────────────────────────────────────────────────────
+// ── APPLE LIQUID GLASS CARD ─────────────────────────────────────────────────
+// Three layers: frosted surface + specular rim + inner light refraction
 function Card({children,style={},glow}:{children:React.ReactNode;style?:React.CSSProperties;glow?:string}) {
   return (
-    <div style={{background:CARD,border:`0.5px solid ${BORDER}`,borderRadius:16,backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",boxShadow:glow?`0 0 0 0.5px ${glow}18 inset,0 20px 40px rgba(0,0,0,0.5),0 0 60px ${glow}08`:"0 20px 40px rgba(0,0,0,0.4)",overflow:"hidden",...style}}>
-      {children}
+    <div style={{
+      position: "relative",
+      background: "rgba(255,255,255,0.03)",
+      border: "0.5px solid rgba(255,255,255,0.1)",
+      borderRadius: 18,
+      backdropFilter: "saturate(180%) blur(40px)",
+      WebkitBackdropFilter: "saturate(180%) blur(40px)",
+      // Layer 1: drop shadow for depth
+      boxShadow: [
+        glow ? `0 0 0 0.5px ${glow}15 inset` : "",
+        "inset 0 1px 0 rgba(255,255,255,0.12)",   // top specular rim
+        "inset 0 -1px 0 rgba(0,0,0,0.25)",          // bottom shadow
+        "inset 1px 0 0 rgba(255,255,255,0.06)",     // left rim
+        "0 24px 48px rgba(0,0,0,0.5)",
+        glow ? `0 0 80px ${glow}06` : "",
+      ].filter(Boolean).join(", "),
+      overflow: "hidden",
+      ...style,
+    }}>
+      {/* Layer 2: inner light refraction — top-left corner glow */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0,
+        background: "radial-gradient(ellipse at 15% 0%, rgba(255,255,255,0.06) 0%, transparent 55%)",
+        borderRadius: 18,
+      }} />
+      {/* Layer 3: bottom-right dark shadow for depth */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0,
+        background: "radial-gradient(ellipse at 85% 100%, rgba(0,0,0,0.15) 0%, transparent 55%)",
+        borderRadius: 18,
+      }} />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        {children}
+      </div>
     </div>
   );
 }
 
-// ── ARCH CARD — equal heights via flex ─────────────────────────────────────
+// ── ARCH CARD — glass quality + equal heights ─────────────────────────────
 function ArchCard({tag,color,title,body}:{tag:string;color:string;title:string;body:string}) {
   return (
-    <div style={{background:"rgba(11,15,25,0.85)",padding:"28px 24px",height:"100%",boxSizing:"border-box",display:"flex",flexDirection:"column",justifyContent:"flex-start",transition:"background 0.2s",boxShadow:"inset 0 1px 0 0 rgba(255,255,255,0.01)"}}>
-      <span style={{fontFamily:"JetBrains Mono,monospace",fontSize:9,fontWeight:600,letterSpacing:"0.2em",textTransform:"uppercase" as const,padding:"3px 10px",borderRadius:5,border:`0.5px solid ${color}30`,background:`${color}0c`,color,display:"inline-block",marginBottom:16}}>{tag}</span>
-      <h3 style={{fontSize:17,fontWeight:700,letterSpacing:"-0.025em",lineHeight:1.3,margin:"0 0 10px",color:WHITE}}>{title}</h3>
-      <p style={{fontSize:13.5,color:MUTED,lineHeight:1.8,fontWeight:300,margin:0,flex:1}}>{body}</p>
+    <div style={{
+      position: "relative",
+      background: "rgba(255,255,255,0.025)",
+      padding:"28px 24px",
+      height:"100%",
+      boxSizing:"border-box" as const,
+      display:"flex",
+      flexDirection:"column" as const,
+      justifyContent:"flex-start",
+      transition:"background 0.25s, box-shadow 0.25s",
+      overflow: "hidden",
+    }}
+    onMouseEnter={e=>{
+      (e.currentTarget as HTMLElement).style.background="rgba(255,255,255,0.04)";
+      (e.currentTarget as HTMLElement).style.boxShadow="inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 0 0.5px rgba(255,255,255,0.06)";
+    }}
+    onMouseLeave={e=>{
+      (e.currentTarget as HTMLElement).style.background="rgba(255,255,255,0.025)";
+      (e.currentTarget as HTMLElement).style.boxShadow="none";
+    }}
+    >
+      {/* Top-left light refraction on hover */}
+      <div style={{position:"absolute",top:0,left:0,right:0,height:"40%",background:"linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%)",pointerEvents:"none"}} />
+      <span style={{fontFamily:"JetBrains Mono,monospace",fontSize:9,fontWeight:600,letterSpacing:"0.2em",textTransform:"uppercase" as const,padding:"3px 10px",borderRadius:5,border:`0.5px solid ${color}30`,background:`${color}0c`,color,display:"inline-block",marginBottom:16,position:"relative"}}>{tag}</span>
+      <h3 style={{fontSize:17,fontWeight:700,letterSpacing:"-0.025em",lineHeight:1.3,margin:"0 0 10px",color:WHITE,position:"relative"}}>{title}</h3>
+      <p style={{fontSize:13.5,color:MUTED,lineHeight:1.8,fontWeight:300,margin:0,flex:1,position:"relative"}}>{body}</p>
     </div>
   );
 }
@@ -99,7 +154,22 @@ function Tag({label,color}:{label:string;color:string}) {
 
 function Btn({href,primary,children,target}:{href:string;primary?:boolean;children:React.ReactNode;target?:string}) {
   return (
-    <a href={href} target={target} style={{display:"inline-flex",alignItems:"center",gap:8,padding:primary?"14px 28px":"13px 28px",borderRadius:10,fontSize:14,fontWeight:primary?600:500,textDecoration:"none",cursor:"pointer",transition:"all 0.2s",background:primary?CYAN:"transparent",color:primary?"#000":WHITE,border:primary?"none":`0.5px solid ${BORDER}`,fontFamily:primary?"inherit":"JetBrains Mono,monospace",letterSpacing:primary?"normal":"0.05em"}}>
+    <a href={href} target={target} style={{
+      display:"inline-flex",alignItems:"center",gap:8,
+      padding:primary?"14px 28px":"13px 28px",
+      borderRadius:10,fontSize:14,fontWeight:primary?600:500,
+      textDecoration:"none",cursor:"pointer",transition:"all 0.2s",
+      background:primary?CYAN:"rgba(255,255,255,0.05)",
+      color:primary?"#000":WHITE,
+      border:primary?"none":"0.5px solid rgba(255,255,255,0.12)",
+      fontFamily:primary?"inherit":"JetBrains Mono,monospace",
+      letterSpacing:primary?"normal":"0.05em",
+      backdropFilter:primary?"none":"saturate(180%) blur(20px)",
+      WebkitBackdropFilter:primary?"none":"saturate(180%) blur(20px)",
+      boxShadow:primary
+        ?`0 0 24px ${CYAN}35, inset 0 1px 0 rgba(255,255,255,0.4), 0 4px 12px rgba(0,0,0,0.3)`
+        :"inset 0 1px 0 rgba(255,255,255,0.1), inset 0 -1px 0 rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.3)",
+    }}>
       {children}
     </a>
   );
@@ -228,20 +298,41 @@ function GhostHero({size=420}:{size?:number}) {
 
         {/* Badges */}
         <div ref={badge1Ref} style={{position:"absolute",top:"8%",left:"-8%",willChange:"transform"}}>
-          <div style={{padding:"10px 16px",borderRadius:10,background:"rgba(3,7,18,0.88)",backdropFilter:"blur(24px)",border:`0.5px solid ${CYAN}30`,fontFamily:"JetBrains Mono,monospace",boxShadow:`0 8px 32px rgba(0,0,0,0.6)`}}>
-            <div style={{fontSize:8.5,color:MUTED,letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:3}}>TEE Status</div>
+          <div style={{padding:"10px 16px",borderRadius:12,
+            background:"rgba(255,255,255,0.06)",
+            backdropFilter:"saturate(180%) blur(32px)",
+            WebkitBackdropFilter:"saturate(180%) blur(32px)",
+            border:"0.5px solid rgba(255,255,255,0.14)",
+            fontFamily:"JetBrains Mono,monospace",
+            boxShadow:"inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -1px 0 rgba(0,0,0,0.15), 0 8px 32px rgba(0,0,0,0.5)",
+          }}>
+            <div style={{fontSize:8.5,color:"rgba(255,255,255,0.5)",letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:3}}>TEE Status</div>
             <div style={{fontSize:12,color:CYAN,fontWeight:600}}>Enclave Active</div>
           </div>
         </div>
         <div ref={badge2Ref} style={{position:"absolute",bottom:"14%",right:"-8%",willChange:"transform"}}>
-          <div style={{padding:"10px 16px",borderRadius:10,background:"rgba(3,7,18,0.88)",backdropFilter:"blur(24px)",border:`0.5px solid ${CYAN}30`,fontFamily:"JetBrains Mono,monospace",boxShadow:`0 8px 32px rgba(0,0,0,0.6)`}}>
-            <div style={{fontSize:8.5,color:MUTED,letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:3}}>Human Authorized</div>
+          <div style={{padding:"10px 16px",borderRadius:12,
+            background:"rgba(255,255,255,0.06)",
+            backdropFilter:"saturate(180%) blur(32px)",
+            WebkitBackdropFilter:"saturate(180%) blur(32px)",
+            border:"0.5px solid rgba(255,255,255,0.14)",
+            fontFamily:"JetBrains Mono,monospace",
+            boxShadow:"inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -1px 0 rgba(0,0,0,0.15), 0 8px 32px rgba(0,0,0,0.5)",
+          }}>
+            <div style={{fontSize:8.5,color:"rgba(255,255,255,0.5)",letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:3}}>Human Authorized</div>
             <div style={{fontSize:12,color:CYAN,fontWeight:600}}>FALSE</div>
           </div>
         </div>
         <div ref={badge3Ref} style={{position:"absolute",top:"42%",right:"-12%",willChange:"transform"}}>
-          <div style={{padding:"10px 16px",borderRadius:10,background:"rgba(3,7,18,0.88)",backdropFilter:"blur(24px)",border:`0.5px solid ${PURPLE}30`,fontFamily:"JetBrains Mono,monospace",boxShadow:`0 8px 32px rgba(0,0,0,0.6)`}}>
-            <div style={{fontSize:8.5,color:MUTED,letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:3}}>Storage</div>
+          <div style={{padding:"10px 16px",borderRadius:12,
+            background:"rgba(255,255,255,0.06)",
+            backdropFilter:"saturate(180%) blur(32px)",
+            WebkitBackdropFilter:"saturate(180%) blur(32px)",
+            border:"0.5px solid rgba(255,255,255,0.14)",
+            fontFamily:"JetBrains Mono,monospace",
+            boxShadow:"inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -1px 0 rgba(0,0,0,0.15), 0 8px 32px rgba(0,0,0,0.5)",
+          }}>
+            <div style={{fontSize:8.5,color:"rgba(255,255,255,0.5)",letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:3}}>Storage</div>
             <div style={{fontSize:12,color:PURPLE,fontWeight:600}}>0G Network</div>
           </div>
         </div>
@@ -311,7 +402,13 @@ export default function Home() {
       <Particles />
 
       {/* ── NAV ── */}
-      <nav style={{position:"fixed",top:0,left:0,right:0,zIndex:1000,height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(16px,4vw,40px)",background:`${BG}dd`,backdropFilter:"saturate(180%) blur(40px)",WebkitBackdropFilter:"saturate(180%) blur(40px)",borderBottom:`0.5px solid ${BORDER}`}}>
+      <nav style={{position:"fixed",top:0,left:0,right:0,zIndex:1000,height:56,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 clamp(16px,4vw,40px)",
+        background:"rgba(3,7,18,0.72)",
+        backdropFilter:"saturate(200%) blur(40px)",
+        WebkitBackdropFilter:"saturate(200%) blur(40px)",
+        borderBottom:"0.5px solid rgba(255,255,255,0.08)",
+        boxShadow:"inset 0 -0.5px 0 rgba(255,255,255,0.04), 0 1px 0 rgba(0,0,0,0.4)",
+      }}>
         <a href="/" style={{display:"flex",alignItems:"center",gap:10,textDecoration:"none"}}>
           <div style={{width:30,height:30,borderRadius:8,overflow:"hidden",background:"#0a0f1a",display:"flex",alignItems:"center",justifyContent:"center",border:`0.5px solid ${BORDER}`}}>
             <img src="/logo2.png" alt="Ghost" style={{width:34,height:34,objectFit:"cover",objectPosition:"center 10%",mixBlendMode:"screen"}} />
@@ -326,7 +423,9 @@ export default function Home() {
             ))}
           </div>
         )}
-        <a href="https://0g.ai/arena/zero-cup" target="_blank" style={{display:"inline-flex",alignItems:"center",gap:6,padding:isMobile?"8px 12px":"9px 18px",borderRadius:8,fontSize:isMobile?11:13,fontWeight:600,textDecoration:"none",background:CYAN,color:"#000",whiteSpace:"nowrap"}}>
+        <a href="https://0g.ai/arena/zero-cup" target="_blank" style={{display:"inline-flex",alignItems:"center",gap:6,padding:isMobile?"8px 12px":"9px 18px",borderRadius:8,fontSize:isMobile?11:13,fontWeight:600,textDecoration:"none",background:CYAN,color:"#000",whiteSpace:"nowrap",
+          boxShadow:`0 0 20px ${CYAN}40, 0 4px 12px rgba(0,0,0,0.3)`,
+        }}>
           Vote on Zero Cup
         </a>
       </nav>
@@ -389,10 +488,17 @@ export default function Home() {
 
       {/* ── METRICS ── */}
       <Sec style={{padding:"56px clamp(20px,5vw,60px)"}}>
-        <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)",gap:1,background:BORDER,borderRadius:16,overflow:"hidden"}}>
+        <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)",gap:1,
+          background:"rgba(255,255,255,0.06)",
+          borderRadius:16,overflow:"hidden",
+          border:"0.5px solid rgba(255,255,255,0.08)",
+          boxShadow:"inset 0 1px 0 rgba(255,255,255,0.08), 0 20px 40px rgba(0,0,0,0.4)",
+        }}>
           {[{val:cycles||0,label:"Inference cycles",sub:"TEE verified",color:CYAN},{val:"0",label:"Admin keys",sub:"No owner exists",color:CYAN},{val:"3",label:"0G layers",sub:"All load-bearing",color:WHITE},{val:"FALSE",label:"Human authorized",sub:"Every single cycle",color:CYAN}].map((m,i)=>(
             <R key={i} d={i*0.07}>
-              <div style={{background:"rgba(11,15,25,0.9)",padding:"28px 20px",textAlign:"center"}}>
+              <div style={{background:"rgba(255,255,255,0.02)",padding:"28px 20px",textAlign:"center",
+                backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",
+              }}>
                 <div style={{fontSize:9.5,fontWeight:600,letterSpacing:"0.15em",textTransform:"uppercase" as const,color:MUTED,marginBottom:8}}>{m.label}</div>
                 <div style={{fontFamily:"JetBrains Mono,monospace",fontSize:"clamp(22px,3vw,40px)",fontWeight:700,letterSpacing:"-0.04em",lineHeight:1,color:m.color,marginBottom:5}}>{m.val}</div>
                 <div style={{fontSize:10,color:DIMMED}}>{m.sub}</div>
@@ -409,7 +515,12 @@ export default function Home() {
         <R d={0.16}><p style={{fontSize:15,color:MUTED,fontWeight:300,lineHeight:1.8,maxWidth:500,margin:"0 0 40px"}}>Remove any one and GHOST fails. 0G is the reason it exists at all.</p></R>
 
         {/* Gemini point 2: equal card heights via grid + h-full flex */}
-        <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)",gap:1,background:BORDER,borderRadius:16,overflow:"hidden"}}>
+        <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)",gap:1,
+          background:"rgba(255,255,255,0.06)",
+          borderRadius:18,overflow:"hidden",
+          boxShadow:"inset 0 1px 0 rgba(255,255,255,0.08), 0 24px 48px rgba(0,0,0,0.4)",
+          border:"0.5px solid rgba(255,255,255,0.08)",
+        }}>
           {arch.map((c,i)=>(
             <R key={i} d={i*0.06}>
               <div style={{gridColumn:(c as any).wide&&!isMobile?"span 2":undefined,height:"100%"}}>
@@ -428,7 +539,7 @@ export default function Home() {
           <Card glow={CYAN}>
             {steps.map((s,i)=>(
               <R key={i} d={i*0.05}>
-                <div style={{display:"flex",alignItems:isMobile?"flex-start":"center",gap:16,padding:`${isMobile?"16px":"20px"} ${isMobile?"18px":"26px"}`,borderBottom:i<5?`0.5px solid ${BORDER}`:"none"}}>
+                <div style={{display:"flex",alignItems:isMobile?"flex-start":"center",gap:16,padding:`${isMobile?"16px":"20px"} ${isMobile?"18px":"26px"}`,borderBottom:i<5?`0.5px solid rgba(255,255,255,0.06)`:"none",background:"rgba(255,255,255,0.01)",transition:"background 0.15s"}}>
                   <span style={{fontFamily:"JetBrains Mono,monospace",fontSize:11,color:DIMMED,width:28,flexShrink:0,fontWeight:600,paddingTop:isMobile?"2px":"0"}}>{s.n}</span>
                   <div style={{flex:1}}>
                     <p style={{fontSize:14,fontWeight:600,letterSpacing:"-0.02em",margin:"0 0 3px"}}>{s.title}</p>
@@ -557,7 +668,14 @@ export default function Home() {
       </Sec>
 
       {/* ── FOOTER ── */}
-      <footer style={{borderTop:`0.5px solid ${BORDER}`,position:"relative",zIndex:10}}>
+      <footer style={{
+        borderTop:"0.5px solid rgba(255,255,255,0.07)",
+        position:"relative",zIndex:10,
+        background:"rgba(3,7,18,0.6)",
+        backdropFilter:"saturate(180%) blur(40px)",
+        WebkitBackdropFilter:"saturate(180%) blur(40px)",
+        boxShadow:"inset 0 1px 0 rgba(255,255,255,0.06)",
+      }}>
         <div style={{maxWidth:1160,margin:"0 auto",padding:`40px clamp(20px,5vw,60px) 28px`,display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr 1fr",gap:isMobile?32:48,alignItems:"start"}}>
           <div>
             <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
@@ -617,10 +735,17 @@ export default function Home() {
         @keyframes rB{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
         @keyframes sD{0%{transform:scaleY(0);transform-origin:top;opacity:0}40%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);transform-origin:bottom;opacity:0}}
         *{box-sizing:border-box;}body{margin:0;}
-        a:hover{opacity:0.75;}
         ::selection{background:${CYAN}22;color:${CYAN};}
         ::-webkit-scrollbar{width:3px;}
         ::-webkit-scrollbar-thumb{background:rgba(0,255,209,0.15);border-radius:2px;}
+        /* Apple glass hover states */
+        a{transition:opacity 0.2s, box-shadow 0.2s;}
+        a:hover{opacity:0.82;}
+        /* Smooth glass card hover */
+        [data-glass]:hover{
+          background:rgba(255,255,255,0.05) !important;
+          border-color:rgba(255,255,255,0.14) !important;
+        }
         @media(max-width:480px){
           nav a[href="/dashboard"]{display:none;}
         }
