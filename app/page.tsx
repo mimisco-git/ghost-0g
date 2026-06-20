@@ -148,7 +148,12 @@ export default function Home() {
   const [lines, setLines] = useState<{ tag: string; tc: string; msg: string; time: string }[]>([]);
   const feedRef       = useRef<HTMLDivElement>(null);
   const idxRef        = useRef(0);
+  const containerRef  = useRef<HTMLDivElement>(null);
   const ghostRef      = useRef<HTMLDivElement>(null);
+  const ringsRef      = useRef<HTMLDivElement>(null);
+  const badge1Ref     = useRef<HTMLDivElement>(null);
+  const badge2Ref     = useRef<HTMLDivElement>(null);
+  const badge3Ref     = useRef<HTMLDivElement>(null);
   const leftPupilRef  = useRef<HTMLDivElement>(null);
   const rightPupilRef = useRef<HTMLDivElement>(null);
 
@@ -156,27 +161,57 @@ export default function Home() {
   const rawY  = useTransform(scrollY, [0, 700], [0, -80]);
   const heroY = useSpring(rawY, { stiffness: 80, damping: 22 });
 
-  // Body tilt + eye tracking
+  // ── LAYERED PARALLAX DAMPENING MATRIX ─────────────────────────────────────
+  // Each layer moves at a different speed to create genuine spatial depth.
+  // Rings barely move (anchor). Ghost: medium. Badges: fast (foreground).
+  // Math.atan curve prevents hard snapping at viewport edges.
   useEffect(() => {
     const onMouse = (e: MouseEvent) => {
-      if (ghostRef.current) {
-        const r = ghostRef.current.getBoundingClientRect();
-        const dx = (e.clientX - r.left - r.width/2) / r.width;
-        const dy = (e.clientY - r.top  - r.height/2) / r.height;
-        ghostRef.current.style.transform =
-          `perspective(1200px) rotateX(${dy*10}deg) rotateY(${-dx*10}deg) translateZ(0)`;
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+
+      // Raw -1 to 1 vectors from center
+      const rawX = ((e.clientX - rect.left)  / rect.width)  * 2 - 1;
+      const rawY = ((e.clientY - rect.top)   / rect.height) * 2 - 1;
+
+      // atan curve: smooth damping at edges, no hard snapping
+      const sx = Math.atan(rawX * 1.2) / (Math.PI / 2);
+      const sy = Math.atan(rawY * 1.2) / (Math.PI / 2);
+
+      // Layer 1: rings — anchor field, barely move
+      if (ringsRef.current) {
+        ringsRef.current.style.transform = `translate3d(${sx * 5}px, ${sy * 5}px, 0)`;
+        ringsRef.current.style.transition = "transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94)";
       }
+
+      // Layer 2: ghost body — medium translate + 3D perspective tilt
+      if (ghostRef.current) {
+        ghostRef.current.style.transform =
+          `perspective(1200px) translate3d(${sx * 16}px, ${sy * 16}px, 0) rotateY(${sx * 10}deg) rotateX(${-sy * 10}deg)`;
+        ghostRef.current.style.transition = "transform 0.15s cubic-bezier(0.25,0.46,0.45,0.94)";
+      }
+
+      // Layer 3: badges — foreground, fastest (creates depth illusion)
+      [[badge1Ref, 28], [badge2Ref, 36], [badge3Ref, 32]].forEach(([ref, speed]) => {
+        const r = ref as React.RefObject<HTMLDivElement>;
+        if (!r.current) return;
+        r.current.style.transform = `translate3d(${sx * (speed as number)}px, ${sy * (speed as number)}px, 0)`;
+        r.current.style.transition = "transform 0.08s cubic-bezier(0.25,0.46,0.45,0.94)";
+      });
+
+      // Layer 4: pupils — track actual cursor angle within socket
       [leftPupilRef, rightPupilRef].forEach(ref => {
         if (!ref.current) return;
         const eye   = ref.current.parentElement!.getBoundingClientRect();
-        const ex    = eye.left + eye.width/2;
-        const ey    = eye.top  + eye.height/2;
+        const ex    = eye.left + eye.width  / 2;
+        const ey    = eye.top  + eye.height / 2;
         const angle = Math.atan2(e.clientY - ey, e.clientX - ex);
-        const dist  = Math.min(Math.hypot(e.clientX - ex, e.clientY - ey), eye.width * 0.26);
-        ref.current.style.transform =
-          `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`;
+        const dist  = Math.min(Math.hypot(e.clientX - ex, e.clientY - ey), eye.width * 0.28);
+        ref.current.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`;
+        ref.current.style.transition = "transform 0.04s ease-out";
       });
     };
+
     window.addEventListener("mousemove", onMouse, { passive: true });
     return () => window.removeEventListener("mousemove", onMouse);
   }, []);
@@ -265,7 +300,7 @@ export default function Home() {
       </nav>
 
       {/* ── HERO ── */}
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "110px 40px 60px", position: "relative", zIndex: 10 }}>
+      <div ref={containerRef} style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "110px 40px 60px", position: "relative", zIndex: 10 }}>
         <motion.div style={{ y: heroY, width: "100%", maxWidth: 1160, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
 
           {/* Left */}
@@ -274,7 +309,7 @@ export default function Home() {
               <Eyebrow>Zero Cup 2026 · Built on 0G · Sealed Inference</Eyebrow>
             </motion.div>
 
-            <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.25, ease: [0.16,1,0.3,1] }} style={{ fontSize: "clamp(40px,5.2vw,76px)", fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1.01, margin: "0 0 24px", color: WHITE }}>
+            <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.25, ease: [0.16,1,0.3,1] }} style={{ fontSize: "clamp(40px,5.2vw,76px)", fontWeight: 800, letterSpacing: "-0.05em", lineHeight: 1.01, margin: "0 0 24px", color: WHITE }}>
               The AI that<br />
               <span style={{ background: `linear-gradient(135deg, ${WHITE} 0%, ${CYAN} 52%, ${WHITE} 100%)`, backgroundSize: "200% 200%", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", animation: "sh 6s ease-in-out infinite" }}>
                 cannot be stopped.
@@ -302,43 +337,72 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Right: Ghost image */}
-          <motion.div initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.3, delay: 0.3, ease: [0.16,1,0.3,1] }} style={{ display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-            {/* Glow */}
-            <div style={{ position: "absolute", width: "80%", height: "80%", borderRadius: "50%", background: `radial-gradient(ellipse, ${CYAN}15 0%, transparent 70%)`, filter: "blur(36px)", animation: "gB 5s ease-in-out infinite", pointerEvents: "none" }} />
+          {/* Right: Ghost image — layered parallax */}
+          <motion.div
+            ref={containerRef}
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.3, delay: 0.3, ease: [0.16,1,0.3,1] }}
+            style={{ display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}
+          >
+            {/* Layer 1: Rings — barely move, anchor the visual field */}
+            <div ref={ringsRef} style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", willChange: "transform" }}>
+              {/* Ambient glow */}
+              <div style={{ position: "absolute", width: "82%", height: "82%", borderRadius: "50%", background: `radial-gradient(ellipse, ${CYAN}14 0%, transparent 70%)`, filter: "blur(36px)", animation: "gB 5s ease-in-out infinite", pointerEvents: "none" }} />
+              {[94, 112, 130].map((s, i) => (
+                <div key={i} style={{ position: "absolute", width: `${s}%`, height: `${s}%`, borderRadius: "50%", border: `0.5px solid rgba(0,255,209,${0.1 - i*0.03})`, animation: i===0?"rA 24s linear infinite":i===1?"rB 34s linear infinite":"none", pointerEvents: "none" }} />
+              ))}
+            </div>
 
-            {/* Rings */}
-            {[94, 112, 128].map((s, i) => (
-              <div key={i} style={{ position: "absolute", width: `${s}%`, height: `${s}%`, borderRadius: "50%", border: `0.5px solid rgba(0,255,209,${0.1 - i*0.03})`, animation: i===0?"rA 24s linear infinite":i===1?"rB 34s linear infinite":"none", pointerEvents: "none" }} />
-            ))}
-
-            {/* Ghost */}
+            {/* Layer 2: Ghost body — medium translate + 3D tilt */}
             <div style={{ position: "relative", zIndex: 2, width: "clamp(280px,34vw,440px)", aspectRatio: "1", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div ref={ghostRef} style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", transformStyle: "preserve-3d", transition: "transform 0.12s ease-out", animation: "gF 8s ease-in-out infinite", willChange: "transform", position: "relative" }}>
-                <img src="/logo2.png" alt="GHOST" style={{ width: "84%", height: "84%", objectFit: "contain", mixBlendMode: "screen", filter: `drop-shadow(0 0 40px ${CYAN}44) drop-shadow(0 0 80px ${CYAN}18) brightness(1.08)`, pointerEvents: "none", userSelect: "none" }} />
+              <div
+                ref={ghostRef}
+                style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", transformStyle: "preserve-3d", willChange: "transform", position: "relative", animation: "gF 8s ease-in-out infinite" }}
+              >
+                <img
+                  src="/logo2.png"
+                  alt="GHOST"
+                  style={{ width: "84%", height: "84%", objectFit: "contain", mixBlendMode: "screen", filter: `drop-shadow(0 0 44px ${CYAN}55) drop-shadow(0 0 88px ${CYAN}20) brightness(1.1)`, pointerEvents: "none", userSelect: "none" }}
+                />
 
-                {/* LEFT EYE — large black socket covers white PNG eye entirely */}
-                <div style={{ position: "absolute", top: "29%", left: "22%", width: "16%", height: "15%", borderRadius: "50%", background: "#000", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.9)" }}>
-                  <div ref={leftPupilRef} style={{ width: "46%", height: "46%", borderRadius: "50%", background: "radial-gradient(ellipse at 32% 28%, #00FFD1, #00c8a8 55%, #006e5a 100%)", boxShadow: "0 0 10px rgba(0,255,209,1), 0 0 22px rgba(0,255,209,0.7)", transition: "transform 0.05s ease-out", willChange: "transform" }} />
+                {/* LEFT EYE — Apple quality: deep socket + glowing iris + shine dot */}
+                <div style={{ position: "absolute", top: "29%", left: "22%", width: "16%", height: "15%", borderRadius: "50%", background: "radial-gradient(ellipse at 40% 35%, #0a0a0a, #000)", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", boxShadow: "inset 0 3px 8px rgba(0,0,0,1), inset 0 0 0 1px rgba(0,255,209,0.08)" }}>
+                  <div ref={leftPupilRef} style={{ position: "relative", width: "46%", height: "46%", borderRadius: "50%", background: "radial-gradient(ellipse at 32% 28%, #00FFD1 0%, #00c8a8 45%, #007a66 75%, #004d42 100%)", boxShadow: "0 0 12px rgba(0,255,209,1), 0 0 28px rgba(0,255,209,0.7), 0 0 48px rgba(0,255,209,0.3)", willChange: "transform" }}>
+                    {/* Shine dot */}
+                    <div style={{ position: "absolute", top: "12%", right: "14%", width: "22%", height: "22%", borderRadius: "50%", background: "#fff", opacity: 0.88 }} />
+                  </div>
                 </div>
 
-                {/* RIGHT EYE — large black socket covers white PNG eye entirely */}
-                <div style={{ position: "absolute", top: "29%", left: "58%", width: "16%", height: "15%", borderRadius: "50%", background: "#000", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.9)" }}>
-                  <div ref={rightPupilRef} style={{ width: "46%", height: "46%", borderRadius: "50%", background: "radial-gradient(ellipse at 32% 28%, #00FFD1, #00c8a8 55%, #006e5a 100%)", boxShadow: "0 0 10px rgba(0,255,209,1), 0 0 22px rgba(0,255,209,0.7)", transition: "transform 0.05s ease-out", willChange: "transform" }} />
+                {/* RIGHT EYE — same quality */}
+                <div style={{ position: "absolute", top: "29%", left: "58%", width: "16%", height: "15%", borderRadius: "50%", background: "radial-gradient(ellipse at 40% 35%, #0a0a0a, #000)", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", boxShadow: "inset 0 3px 8px rgba(0,0,0,1), inset 0 0 0 1px rgba(0,255,209,0.08)" }}>
+                  <div ref={rightPupilRef} style={{ position: "relative", width: "46%", height: "46%", borderRadius: "50%", background: "radial-gradient(ellipse at 32% 28%, #00FFD1 0%, #00c8a8 45%, #007a66 75%, #004d42 100%)", boxShadow: "0 0 12px rgba(0,255,209,1), 0 0 28px rgba(0,255,209,0.7), 0 0 48px rgba(0,255,209,0.3)", willChange: "transform" }}>
+                    <div style={{ position: "absolute", top: "12%", right: "14%", width: "22%", height: "22%", borderRadius: "50%", background: "#fff", opacity: 0.88 }} />
+                  </div>
                 </div>
               </div>
 
-              {/* Badges */}
-              {[
-                { top: "8%", left: "-8%", label: "TEE Status", val: "Enclave Active", color: CYAN },
-                { bottom: "14%", right: "-8%", label: "Human Authorized", val: "FALSE", color: CYAN },
-                { top: "42%", right: "-12%", label: "Storage", val: "0G Network", color: PURPLE },
-              ].map((b, i) => (
-                <div key={i} style={{ position: "absolute", top: b.top, bottom: (b as any).bottom, left: b.left, right: (b as any).right, padding: "10px 16px", borderRadius: 10, background: "rgba(3,7,18,0.85)", backdropFilter: "blur(20px)", border: `0.5px solid ${b.color}30`, fontFamily: "JetBrains Mono, monospace", boxShadow: `0 8px 24px rgba(0,0,0,0.5), 0 0 0 0.5px ${b.color}15 inset` }}>
-                  <div style={{ fontSize: 8.5, color: MUTED, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 3 }}>{b.label}</div>
-                  <div style={{ fontSize: 12, color: b.color, fontWeight: 600 }}>{b.val}</div>
+              {/* Layer 3: Badges — foreground, fastest parallax = maximum depth */}
+              <div ref={badge1Ref} style={{ position: "absolute", top: "8%", left: "-8%", willChange: "transform" }}>
+                <div style={{ padding: "10px 16px", borderRadius: 10, background: "rgba(3,7,18,0.88)", backdropFilter: "blur(24px)", border: `0.5px solid ${CYAN}30`, fontFamily: "JetBrains Mono, monospace", boxShadow: `0 8px 32px rgba(0,0,0,0.6), 0 0 0 0.5px ${CYAN}12 inset` }}>
+                  <div style={{ fontSize: 8.5, color: MUTED, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 3 }}>TEE Status</div>
+                  <div style={{ fontSize: 12, color: CYAN, fontWeight: 600 }}>Enclave Active</div>
                 </div>
-              ))}
+              </div>
+
+              <div ref={badge2Ref} style={{ position: "absolute", bottom: "14%", right: "-8%", willChange: "transform" }}>
+                <div style={{ padding: "10px 16px", borderRadius: 10, background: "rgba(3,7,18,0.88)", backdropFilter: "blur(24px)", border: `0.5px solid ${CYAN}30`, fontFamily: "JetBrains Mono, monospace", boxShadow: `0 8px 32px rgba(0,0,0,0.6), 0 0 0 0.5px ${CYAN}12 inset` }}>
+                  <div style={{ fontSize: 8.5, color: MUTED, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 3 }}>Human Authorized</div>
+                  <div style={{ fontSize: 12, color: CYAN, fontWeight: 600 }}>FALSE</div>
+                </div>
+              </div>
+
+              <div ref={badge3Ref} style={{ position: "absolute", top: "42%", right: "-12%", willChange: "transform" }}>
+                <div style={{ padding: "10px 16px", borderRadius: 10, background: "rgba(3,7,18,0.88)", backdropFilter: "blur(24px)", border: `0.5px solid ${PURPLE}30`, fontFamily: "JetBrains Mono, monospace", boxShadow: `0 8px 32px rgba(0,0,0,0.6), 0 0 0 0.5px ${PURPLE}12 inset` }}>
+                  <div style={{ fontSize: 8.5, color: MUTED, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 3 }}>Storage</div>
+                  <div style={{ fontSize: 12, color: PURPLE, fontWeight: 600 }}>0G Network</div>
+                </div>
+              </div>
             </div>
           </motion.div>
         </motion.div>
@@ -348,16 +412,16 @@ export default function Home() {
           <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, color: DIMMED, letterSpacing: "0.18em", textTransform: "uppercase" }}>Scroll</span>
           <div style={{ width: 1, height: 32, background: `linear-gradient(to bottom, ${CYAN}60, transparent)`, animation: "sD 2.2s ease-in-out infinite" }} />
         </div>
-      </div>
 
-      {/* ── MARQUEE ── */}
-      <div style={{ borderTop: `0.5px solid ${BORDER}`, borderBottom: `0.5px solid ${BORDER}`, background: "rgba(11,15,25,0.4)", padding: "13px 0", overflow: "hidden", position: "relative", zIndex: 10 }}>
-        <div style={{ display: "flex", gap: 40, animation: "mq 30s linear infinite", whiteSpace: "nowrap", width: "max-content" }}>
-          {["TEEML ATTESTATION VERIFIED","0G COMPUTE · SEALED INFERENCE","0G STORAGE · PERMANENT MEMORY","0G CHAIN · ZERO ADMIN KEYS","AUTONOMOUS PAYMENT LOOP","HUMAN AUTHORIZED: FALSE","NO KILL SWITCH · ALWAYS ON","ZERO CUP 2026","ERC-7857 AGENTIC ID","TEEML ATTESTATION VERIFIED","0G COMPUTE · SEALED INFERENCE","0G STORAGE · PERMANENT MEMORY","0G CHAIN · ZERO ADMIN KEYS","AUTONOMOUS PAYMENT LOOP","HUMAN AUTHORIZED: FALSE","NO KILL SWITCH · ALWAYS ON","ZERO CUP 2026","ERC-7857 AGENTIC ID"].map((t, i) => (
-            <span key={i} style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9.5, color: MUTED, letterSpacing: "0.14em", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-              <span style={{ width: 3, height: 3, borderRadius: "50%", background: CYAN, display: "inline-block", opacity: 0.6 }} />{t}
-            </span>
-          ))}
+        {/* Marquee overlaid on hero bottom — Gemini point 4 */}
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 20, borderTop: `0.5px solid ${BORDER}`, background: `${BG}cc`, backdropFilter: "blur(20px)", padding: "12px 0", overflow: "hidden" }}>
+          <div style={{ display: "flex", gap: 40, animation: "mq 30s linear infinite", whiteSpace: "nowrap", width: "max-content" }}>
+            {["TEEML ATTESTATION VERIFIED","0G COMPUTE · SEALED INFERENCE","0G STORAGE · PERMANENT MEMORY","0G CHAIN · ZERO ADMIN KEYS","AUTONOMOUS PAYMENT LOOP","HUMAN AUTHORIZED: FALSE","NO KILL SWITCH · ALWAYS ON","ZERO CUP 2026","ERC-7857 AGENTIC ID","TEEML ATTESTATION VERIFIED","0G COMPUTE · SEALED INFERENCE","0G STORAGE · PERMANENT MEMORY","0G CHAIN · ZERO ADMIN KEYS","AUTONOMOUS PAYMENT LOOP","HUMAN AUTHORIZED: FALSE","NO KILL SWITCH · ALWAYS ON","ZERO CUP 2026","ERC-7857 AGENTIC ID"].map((t, i) => (
+              <span key={i} style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9.5, color: MUTED, letterSpacing: "0.14em", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                <span style={{ width: 3, height: 3, borderRadius: "50%", background: CYAN, display: "inline-block", opacity: 0.6 }} />{t}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
