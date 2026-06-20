@@ -1,149 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
-
-// ── OLED SEQUENCER LOADER ──────────────────────────────────────────────────
-const LOADER_LINES = [
-  { text: "GHOST v1.0 · Initializing...",           color: "#6b7280" },
-  { text: "Loading 0G Compute Router...",            color: "#6b7280" },
-  { text: "Verifying TEE enclave...",                color: "#6b7280" },
-  { text: "Authenticating wallet: 0xD040...ed40",    color: "#6b7280" },
-  { text: "Checking 0G Storage index...",            color: "#6b7280" },
-  { text: "Storage hash: 0xd967...ba5a  ✓",         color: "#00FFD1" },
-  { text: "TEEML attestation: VERIFIED  ✓",          color: "#00ff66" },
-  { text: "human_authorized: FALSE  ✓",              color: "#00FFD1" },
-  { text: "Admin keys: NONE  ✓",                     color: "#00ff66" },
-  { text: "Autonomous mode: ACTIVE",                 color: "#00FFD1" },
-  { text: "GHOST ONLINE.",                           color: "#00FFD1" },
-];
-
-function SequencerLoader({ onDone }: { onDone: () => void }) {
-  const [visible, setVisible] = useState<typeof LOADER_LINES>([]);
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    let i = 0;
-    const iv = setInterval(() => {
-      setVisible(prev => [...prev, LOADER_LINES[i]]);
-      i++;
-      if (i >= LOADER_LINES.length) {
-        clearInterval(iv);
-        setTimeout(() => { setDone(true); setTimeout(onDone, 700); }, 500);
-      }
-    }, 140);
-    return () => clearInterval(iv);
-  }, []);
-
-  return (
-    <motion.div
-      initial={{ opacity: 1 }}
-      animate={{ opacity: done ? 0 : 1 }}
-      transition={{ duration: 0.6 }}
-      style={{
-        position: "fixed", inset: 0, zIndex: 9999,
-        background: "#000000",
-        display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
-      }}
-    >
-      {/* Ghost icon assembles in */}
-      <motion.div
-        initial={{ opacity: 0, y: -24, scale: 0.5 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        style={{ marginBottom: 44, display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}
-      >
-        <img
-          src="/logo2.png"
-          alt="GHOST"
-          style={{
-            width: 72, height: 72,
-            objectFit: "contain",
-            mixBlendMode: "screen",
-            filter: "drop-shadow(0 0 24px rgba(0,255,209,0.55)) drop-shadow(0 0 48px rgba(0,255,209,0.2)) brightness(1.1)",
-          }}
-        />
-        <span style={{
-          fontFamily: "JetBrains Mono, monospace",
-          fontSize: 9, fontWeight: 700,
-          letterSpacing: "0.28em", color: "rgba(0,255,209,0.5)",
-          textTransform: "uppercase",
-        }}>GHOST AUTONOMOUS AI</span>
-      </motion.div>
-
-      {/* Terminal card */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        style={{
-          width: 460,
-          background: "rgba(5,7,15,0.95)",
-          border: "0.5px solid rgba(31,41,61,0.8)",
-          borderRadius: 14,
-          overflow: "hidden",
-          boxShadow: "0 0 0 0.5px rgba(0,255,209,0.06) inset, 0 32px 64px rgba(0,0,0,0.8)",
-        }}
-      >
-        {/* Terminal titlebar */}
-        <div style={{
-          padding: "10px 16px",
-          background: "rgba(11,17,32,0.8)",
-          borderBottom: "0.5px solid rgba(31,41,61,0.6)",
-          display: "flex", alignItems: "center", gap: 6,
-        }}>
-          {[["#ff5f57"],["#ffbd2e"],["#28c941"]].map(([c]) => (
-            <div key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c }} />
-          ))}
-          <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9.5, color: "rgba(107,114,128,0.8)", marginLeft: "auto", letterSpacing: "0.08em" }}>
-            ghost-agent · boot sequence
-          </span>
-        </div>
-
-        {/* Lines */}
-        <div style={{ padding: "16px 20px 20px", minHeight: 200 }}>
-          {visible.map((line, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -6 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.18 }}
-              style={{
-                fontFamily: "JetBrains Mono, monospace",
-                fontSize: 11.5, lineHeight: 2.1,
-                display: "flex", alignItems: "center", gap: 12,
-              }}
-            >
-              <span style={{ color: "rgba(55,65,81,0.7)", fontSize: 10, width: 20, flexShrink: 0 }}>
-                {String(i).padStart(2, "0")}
-              </span>
-              <span style={{ color: line.color }}>{line.text}</span>
-              {i === visible.length - 1 && !done && (
-                <span style={{
-                  display: "inline-block", width: 6, height: 13,
-                  background: "#00FFD1", marginLeft: 2,
-                  animation: "blink .65s steps(1) infinite",
-                }} />
-              )}
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Bottom label */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: done ? 0 : 0.35 }}
-        transition={{ duration: 0.5, delay: 1.5 }}
-        style={{ marginTop: 28, fontFamily: "JetBrains Mono, monospace", fontSize: 9, color: "#374151", letterSpacing: "0.14em" }}
-      >
-        ZERO CUP 2026 · 0G GALILEO TESTNET · CHAIN ID 16602
-      </motion.div>
-
-      <style>{`@keyframes blink { 50% { opacity: 0; } }`}</style>
-    </motion.div>
-  );
-}
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 // ── DESIGN TOKENS ──────────────────────────────────────────────────────────
 const BG       = "#030712";
@@ -289,7 +146,6 @@ export default function Home() {
   const [cycles, setCycles] = useState(0);
   const [storageHash] = useState("0xd967a299b7e5f34da189b0e4d5c146bf4cee5980265374cbd0d2e808fe52ba5a");
   const [lines, setLines] = useState<{ tag: string; tc: string; msg: string; time: string }[]>([]);
-  const [loaderDone, setLoaderDone] = useState(false);
   const feedRef       = useRef<HTMLDivElement>(null);
   const idxRef        = useRef(0);
   const ghostRef      = useRef<HTMLDivElement>(null);
@@ -299,11 +155,6 @@ export default function Home() {
   const { scrollY } = useScroll();
   const rawY  = useTransform(scrollY, [0, 700], [0, -80]);
   const heroY = useSpring(rawY, { stiffness: 80, damping: 22 });
-
-  // Skip loader if already seen this session
-  useEffect(() => {
-    if (sessionStorage.getItem("ghost-loaded")) setLoaderDone(true);
-  }, []);
 
   // Body tilt + eye tracking
   useEffect(() => {
@@ -392,16 +243,6 @@ export default function Home() {
 
   return (
     <div style={{ background: BG, color: WHITE, fontFamily: "-apple-system, 'SF Pro Display', Inter, 'Helvetica Neue', sans-serif", WebkitFontSmoothing: "antialiased", overflowX: "hidden", minHeight: "100vh" }}>
-
-      {/* OLED SEQUENCER LOADER */}
-      <AnimatePresence>
-        {!loaderDone && (
-          <SequencerLoader onDone={() => {
-            sessionStorage.setItem("ghost-loaded", "1");
-            setLoaderDone(true);
-          }} />
-        )}
-      </AnimatePresence>
 
       <Particles />
 
