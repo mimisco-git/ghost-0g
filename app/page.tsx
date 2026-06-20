@@ -317,14 +317,14 @@ export default function Home() {
               <div ref={ghostRef} style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", transformStyle: "preserve-3d", transition: "transform 0.12s ease-out", animation: "gF 8s ease-in-out infinite", willChange: "transform", position: "relative" }}>
                 <img src="/logo2.png" alt="GHOST" style={{ width: "84%", height: "84%", objectFit: "contain", mixBlendMode: "screen", filter: `drop-shadow(0 0 40px ${CYAN}44) drop-shadow(0 0 80px ${CYAN}18) brightness(1.08)`, pointerEvents: "none", userSelect: "none" }} />
 
-                {/* LEFT EYE pupil — tracks mouse */}
-                <div style={{ position: "absolute", top: "33%", left: "26%", width: "13%", height: "11%", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
-                  <div ref={leftPupilRef} style={{ width: "52%", height: "52%", borderRadius: "50%", background: "radial-gradient(ellipse at 32% 28%, #00FFD1, #00c8a8 55%, #006e5a 100%)", boxShadow: "0 0 8px rgba(0,255,209,0.9), 0 0 16px rgba(0,255,209,0.5)", transition: "transform 0.06s ease-out", willChange: "transform" }} />
+                {/* LEFT EYE — large black socket covers white PNG eye entirely */}
+                <div style={{ position: "absolute", top: "29%", left: "22%", width: "16%", height: "15%", borderRadius: "50%", background: "#000", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.9)" }}>
+                  <div ref={leftPupilRef} style={{ width: "46%", height: "46%", borderRadius: "50%", background: "radial-gradient(ellipse at 32% 28%, #00FFD1, #00c8a8 55%, #006e5a 100%)", boxShadow: "0 0 10px rgba(0,255,209,1), 0 0 22px rgba(0,255,209,0.7)", transition: "transform 0.05s ease-out", willChange: "transform" }} />
                 </div>
 
-                {/* RIGHT EYE pupil — tracks mouse */}
-                <div style={{ position: "absolute", top: "33%", left: "59%", width: "13%", height: "11%", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
-                  <div ref={rightPupilRef} style={{ width: "52%", height: "52%", borderRadius: "50%", background: "radial-gradient(ellipse at 32% 28%, #00FFD1, #00c8a8 55%, #006e5a 100%)", boxShadow: "0 0 8px rgba(0,255,209,0.9), 0 0 16px rgba(0,255,209,0.5)", transition: "transform 0.06s ease-out", willChange: "transform" }} />
+                {/* RIGHT EYE — large black socket covers white PNG eye entirely */}
+                <div style={{ position: "absolute", top: "29%", left: "58%", width: "16%", height: "15%", borderRadius: "50%", background: "#000", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.9)" }}>
+                  <div ref={rightPupilRef} style={{ width: "46%", height: "46%", borderRadius: "50%", background: "radial-gradient(ellipse at 32% 28%, #00FFD1, #00c8a8 55%, #006e5a 100%)", boxShadow: "0 0 10px rgba(0,255,209,1), 0 0 22px rgba(0,255,209,0.7)", transition: "transform 0.05s ease-out", willChange: "transform" }} />
                 </div>
               </div>
 
