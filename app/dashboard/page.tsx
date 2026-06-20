@@ -254,7 +254,7 @@ export default function Dashboard() {
                     <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase" as const, color: SLATE5 }}>Inference Cycles · 0G Compute Router</span>
                     <div style={{ display: "flex", gap: 8 }}>
                       <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, color: GREEN, padding: "3px 9px", borderRadius: 5, background: `${GREEN}0c`, border: `0.5px solid ${GREEN}28` }}>{cycles.length} total</span>
-                      <a href={`https://storagescan-galileo.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, color: PURPLE, padding: "3px 9px", borderRadius: 5, background: `${PURPLE}0c`, border: `0.5px solid ${PURPLE}28`, textDecoration: "none" }}>StorageScan →</a>
+                      <a href={"https://storagescan-galileo.0g.ai/submission/126985"} target="_blank" style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, color: PURPLE, padding: "3px 9px", borderRadius: 5, background: `${PURPLE}0c`, border: `0.5px solid ${PURPLE}28`, textDecoration: "none" }}>StorageScan →</a>
                     </div>
                   </div>
                   <div style={{ maxHeight: 320, overflowY: "auto" }}>
@@ -266,7 +266,7 @@ export default function Dashboard() {
                         <div style={{ marginTop: 20, padding: "14px 18px", borderRadius: 10, background: `${PURPLE}08`, border: `0.5px solid ${PURPLE}22`, textAlign: "left", maxWidth: 480, margin: "20px auto 0" }}>
                           <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, fontWeight: 700, color: PURPLE, letterSpacing: "0.12em", textTransform: "uppercase" as const, marginBottom: 8 }}>0G Storage · Verified</div>
                           <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9.5, color: SLATE4, lineHeight: 1.7 }}>Root hash: <span style={{ color: BLUE, wordBreak: "break-all" as const }}>{storageHash}</span></div>
-                          <a href={`https://storagescan-galileo.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ display: "inline-block", marginTop: 10, fontFamily: "JetBrains Mono, monospace", fontSize: 10, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>Verify on StorageScan →</a>
+                          <a href={"https://storagescan-galileo.0g.ai/submission/126985"} target="_blank" style={{ display: "inline-block", marginTop: 10, fontFamily: "JetBrains Mono, monospace", fontSize: 10, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>Verify on StorageScan →</a>
                         </div>
                       </div>
                     )}
@@ -362,7 +362,7 @@ export default function Dashboard() {
                   Memory matrix, weight profiles, and input vectors are isolated cryptographically within the 0G decentralized compute stack.
                 </p>
 
-                <a href={`https://storagescan-galileo.0g.ai/tx?hash=${storageHash}`} target="_blank" style={{ display: "block", width: "100%", padding: "13px", background: WHITE, color: BG, borderRadius: 9, fontSize: 11, fontFamily: "JetBrains Mono, monospace", fontWeight: 900, letterSpacing: "0.14em", textTransform: "uppercase" as const, textAlign: "center", textDecoration: "none", boxShadow: "0 4px 14px rgba(0,0,0,0.4)", transition: "background 0.2s" }}
+                <a href={"https://storagescan-galileo.0g.ai/submission/126985"} target="_blank" style={{ display: "block", width: "100%", padding: "13px", background: WHITE, color: BG, borderRadius: 9, fontSize: 11, fontFamily: "JetBrains Mono, monospace", fontWeight: 900, letterSpacing: "0.14em", textTransform: "uppercase" as const, textAlign: "center", textDecoration: "none", boxShadow: "0 4px 14px rgba(0,0,0,0.4)", transition: "background 0.2s" }}
                   onMouseEnter={e => (e.currentTarget.style.background = "#e5e7eb")}
                   onMouseLeave={e => (e.currentTarget.style.background = WHITE)}
                 >
@@ -420,7 +420,7 @@ export default function Dashboard() {
                           <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 8.5, fontWeight: 700, color: SLATE6, letterSpacing: "0.1em", marginBottom: 6 }}>STORAGE HASH</div>
                           <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, color: BLUE, wordBreak: "break-all", lineHeight: 1.7 }}>{selected.storageHash}</div>
                         </div>
-                        <a href={`https://storagescan-galileo.0g.ai/tx?hash=${selected.storageHash}`} target="_blank" style={{ display: "inline-block", marginTop: 12, fontFamily: "JetBrains Mono, monospace", fontSize: 10, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>View on StorageScan →</a>
+                        <a href={`https://storagescan-galileo.0g.ai/submission/126985?hash=${selected.storageHash}`} target="_blank" style={{ display: "inline-block", marginTop: 12, fontFamily: "JetBrains Mono, monospace", fontSize: 10, color: PURPLE, textDecoration: "none", fontWeight: 600 }}>View on StorageScan →</a>
                       </>
                     )}
                     {selected.compute?.output && (
