@@ -6,7 +6,7 @@ import ParticleCanvas from "@/components/ParticleCanvas";
 import LiveFeed from "@/components/LiveFeed";
 import { useReveal } from "@/components/useReveal";
 
-const GhostCanvas = lazy(() => import("@/components/GhostCanvas"));
+const GhostOrb = lazy(() => import("@/components/GhostOrb"));
 
 // ─── ANIMATION VARIANTS ────────────────────────────────────────────────────
 const fadeUp = {
@@ -242,7 +242,7 @@ export default function Home() {
                     </div>
                   }
                 >
-                  <GhostCanvas />
+                  <GhostOrb />
                 </Suspense>
               </div>
 
