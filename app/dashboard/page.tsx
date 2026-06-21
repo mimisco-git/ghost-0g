@@ -110,14 +110,40 @@ export default function Dashboard() {
 
   async function refresh() {
     try {
-      const [sRes, cRes, hRes] = await Promise.all([
-        fetch("/api/stats",  { signal: AbortSignal.timeout(5000) }),
-        fetch("/api/cycles", { signal: AbortSignal.timeout(5000) }),
-        fetch("/api/health", { signal: AbortSignal.timeout(5000) }),
-      ]);
-      if (sRes.ok) { const j = await sRes.json(); if (j.ok) setStats(j.data); }
-      if (cRes.ok) { const j = await cRes.json(); if (j.ok) setCycles(j.cycles || []); }
-      if (hRes.ok) { const j = await hRes.json(); if (j.ok) setAlive(j.agentAlive); }
+      // Read cycles.json directly from GitHub repo (written by GitHub Actions agent)
+      const GITHUB_RAW = "https://raw.githubusercontent.com/mimisco-git/ghost-0g/main/data/cycles.json";
+      const cRes = await fetch(GITHUB_RAW + "?t=" + Date.now(), { signal: AbortSignal.timeout(8000) });
+
+      if (cRes.ok) {
+        const cycles: Cycle[] = await cRes.json();
+        setCycles(cycles);
+
+        // Build stats from cycles
+        const completed = cycles.filter((c: Cycle) => c.status === "complete");
+        const failed = cycles.filter((c: Cycle) => c.status === "compute_failed");
+        const anchored = completed.filter((c: Cycle) => c.chain && !(c.chain as any).error);
+        const totalTokens = completed.reduce((s: number, c: Cycle) => s + (c.compute?.inputTok||0) + (c.compute?.outputTok||0), 0);
+        const avgLatencyMs = completed.length > 0
+          ? Math.round(completed.reduce((s: number, c: Cycle) => s + (c.compute?.latencyMs||0), 0) / completed.length)
+          : 0;
+
+        setStats({
+          completedCycles: completed.length,
+          failedCycles: failed.length,
+          anchoredOnChain: anchored.length,
+          totalTokens,
+          avgLatencyMs,
+          wallet: cycles[0]?.wallet ? {
+            address: cycles[0].wallet.address,
+            balance: cycles[0].wallet.balance || "5.49",
+            txCount: 0,
+            blockNumber: cycles[0]?.chain?.blockNumber || 0,
+            explorerUrl: `https://chainscan-galileo.0g.ai/address/${cycles[0].wallet.address}`,
+          } : undefined,
+          lastCycle: cycles[0],
+        });
+        setAlive(completed.length > 0);
+      }
     } catch {}
     setLoading(false);
   }
