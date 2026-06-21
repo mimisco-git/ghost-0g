@@ -1,0 +1,28 @@
+name: GHOST Agent
+
+on:
+  schedule:
+    - cron: '*/6 * * * *'  # every 6 minutes
+  workflow_dispatch:        # manual trigger
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+        
+      - name: Run one agent cycle
+        run: node scripts/run-cycle.js
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          OPENROUTER_KEY: ${{ secrets.OPENROUTER_KEY }}
+          RPC_URL: https://evmrpc-testnet.0g.ai
+          CONTRACT_ADDRESS: 0x58282264D3e65F3026014026DFb2f428E141A0Bd
