@@ -28,6 +28,6 @@ jobs:
         run: |
           git config user.name "GHOST Agent"
           git config user.email "ghost@0g.ai"
-          git add data/cycles.json
-          git diff --staged --quiet || git commit -m "agent: cycle data update [skip ci]"
+          git add -f data/cycles.json
+          git diff --staged --quiet || git commit -m "agent: cycle #$(node -e 'const c=require("./data/cycles.json");console.log(c[0].cycle)') complete [skip ci]"
           git push
