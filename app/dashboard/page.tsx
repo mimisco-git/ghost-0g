@@ -226,13 +226,13 @@ export default function Dashboard() {
       <Header />
       <div style={{ paddingTop: 52 }}>
 
-        {/* METRICS 2x3 grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "rgba(255,255,255,0.07)", borderTop: "0.5px solid rgba(255,255,255,0.07)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)" }}>
+        {/* METRICS: Gemini fix 1: 3x2 compact grid, all 6 values above fold */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, background: "rgba(255,255,255,0.07)", borderTop: "0.5px solid rgba(255,255,255,0.07)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)" }}>
           {topMetrics.map((m, i) => (
-            <div key={i} style={{ background: "rgba(9,14,26,0.8)", padding: "16px 14px", textAlign: "center", backdropFilter: "blur(40px)", boxShadow: i % 2 === 0 ? "inset -0.5px 0 0 rgba(255,255,255,0.04)" : undefined }}>
-              <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 7.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase" as const, color: MUTED, marginBottom: 4 }}>{m.label}</div>
-              <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 22, fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1, color: m.c, marginBottom: 3 }}>{m.val}</div>
-              <div style={{ fontSize: 8.5, color: DIMMED }}>{m.sub}</div>
+            <div key={i} style={{ background: "rgba(8,13,24,0.5)", padding: "11px 10px", backdropFilter: "blur(40px)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.01)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 7.5, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: MUTED }}>{m.label}</span>
+              <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 18, fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1, color: m.c, margin: "5px 0 3px" }}>{m.val}</span>
+              <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 7.5, color: DIMMED, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{m.sub}</span>
             </div>
           ))}
         </div>
@@ -250,31 +250,34 @@ export default function Dashboard() {
 
           {activeTab === "overview" && (
             <>
-              {/* SOVEREIGNTY SHIELD: compact mobile version */}
+              {/* SOVEREIGNTY SHIELD */}
               <GCard glow={GREEN}>
                 <div style={{ padding: "12px 16px", borderBottom: "0.5px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase" as const, color: WHITE }}>Sovereignty Shield</span>
                   <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 8, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${GREEN}10`, color: GREEN, border: `0.5px solid ${GREEN}28` }}>ATTESTED</span>
                 </div>
                 <div style={{ padding: "14px 16px" }}>
-                  <div style={{ background: TERM, border: "0.5px solid rgba(255,255,255,0.06)", borderRadius: 10, padding: "12px 14px", marginBottom: 12, boxShadow: "inset 0 2px 6px rgba(0,0,0,0.5)" }}>
+                  {/* Gemini fix 2: flex-row justify-between for every row, truncate long values */}
+                  <div style={{ background: TERM, border: "0.5px solid rgba(255,255,255,0.06)", borderRadius: 10, padding: "12px 14px", marginBottom: 12, boxShadow: "inset 0 2px 6px rgba(0,0,0,0.5)", display: "flex", flexDirection: "column", gap: 8 }}>
                     {[
-                      ["CONTRACT",       CONTRACT_ADDRESS.slice(0,14)+"...", BLUE],
-                      ["CYCLES ON-CHAIN",contractCycles.toString(),         GREEN],
-                      ["STORAGE STATUS", "PROVABLY_ANCHORED",               GREEN],
-                      ["HUMAN AUTH",     "FALSE",                           GREEN],
-                      ["ADMIN KEY",      "NONE_EXISTS",                     GREEN],
-                      ["KILL SWITCH",    "NONE_EXISTS",                     GREEN],
+                      ["CONTRACT",        CONTRACT_ADDRESS.slice(0,10)+"..."+CONTRACT_ADDRESS.slice(-4), BLUE],
+                      ["CYCLES ON-CHAIN", contractCycles.toString(),                                     GREEN],
+                      ["STORAGE STATUS",  "PROVABLY_ANCHORED",                                          GREEN],
+                      ["HUMAN AUTH",      "FALSE",                                                       GREEN],
+                      ["ADMIN KEY",       "NONE_EXISTS",                                                 GREEN],
+                      ["KILL SWITCH",     "NONE_EXISTS",                                                 GREEN],
+                      ["UPGRADEABLE",     "FALSE",                                                       GREEN],
                     ].map(([l,v,c]) => (
-                      <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", boxShadow: "inset 0 -0.5px 0 rgba(255,255,255,0.03)" }}>
-                        <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 8.5, color: DIMMED, fontWeight: 700 }}>{l}</span>
-                        <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, color: c, fontWeight: 600 }}>{v}</span>
+                      <div key={l} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                        <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 8.5, color: DIMMED, fontWeight: 700, letterSpacing: "0.08em", flexShrink: 0 }}>{l}</span>
+                        <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9.5, color: c, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const, maxWidth: "55%" }}>{v}</span>
                       </div>
                     ))}
                   </div>
-                  <div style={{ display: "flex", gap: 8 }}>
-                    <a href={STORAGE_SCAN} target="_blank" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "11px", borderRadius: 9, background: WHITE, color: BG, fontFamily: "JetBrains Mono, monospace", fontSize: 10, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase" as const, textDecoration: "none" }}>Verify Storage</a>
-                    <a href={CHAIN_SCAN} target="_blank" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "11px", borderRadius: 9, background: `${CYAN}0c`, border: `0.5px solid ${CYAN}30`, color: CYAN, fontFamily: "JetBrains Mono, monospace", fontSize: 10, fontWeight: 700, textDecoration: "none" }}>Contract</a>
+                  {/* Gemini fix 3: equal visual weight buttons, same height, flex-1 */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                    <a href={STORAGE_SCAN} target="_blank" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "11px", borderRadius: 9, background: WHITE, color: BG, fontFamily: "JetBrains Mono, monospace", fontSize: 9.5, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase" as const, textDecoration: "none", boxShadow: "0 4px 14px rgba(0,0,0,0.4)" }}>Verify Storage</a>
+                    <a href={CHAIN_SCAN} target="_blank" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "11px", borderRadius: 9, background: "rgba(9,14,26,0.5)", color: MUTED, fontFamily: "JetBrains Mono, monospace", fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" as const, textDecoration: "none", border: "0.5px solid rgba(255,255,255,0.1)" }}>Contract</a>
                   </div>
                 </div>
               </GCard>
@@ -346,8 +349,6 @@ export default function Dashboard() {
                     </div>
                   </motion.div>
                 ))}
-
-                {/* Expanded cycle detail */}
                 {selected && (
                   <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} style={{ padding: "14px 16px", borderTop: `0.5px solid ${GREEN}20`, background: `${GREEN}04` }}>
                     <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, fontWeight: 700, color: GREEN, letterSpacing: "0.12em", textTransform: "uppercase" as const, marginBottom: 10 }}>Cycle #{selected.cycle} Detail</div>
@@ -388,25 +389,25 @@ export default function Dashboard() {
                   ["Balance",          `${stats?.wallet?.balance ?? "—"} 0G`,                         GREEN],
                   ["TX Count",         stats?.wallet?.txCount?.toString() ?? "—",                     WHITE],
                   ["Block Number",     stats?.wallet?.blockNumber?.toLocaleString() ?? "—",           WHITE],
-                  ["Network",          "0G Galileo Testnet · Chain ID 16602",                         WHITE],
-                  ["Contract",         CONTRACT_ADDRESS,                                               CYAN],
+                  ["Network",          "0G Galileo · Chain ID 16602",                                 WHITE],
+                  ["Contract",         CONTRACT_ADDRESS.slice(0,10)+"..."+CONTRACT_ADDRESS.slice(-4), CYAN],
                   ["Cycles On-Chain",  contractCycles.toString(),                                      GREEN],
-                  ["Latest Storage",   storageHash.slice(0,20)+"...",                                  BLUE],
-                  ["Storage Node",     "indexer-storage-testnet-turbo.0g.ai",                          MUTED],
+                  ["Latest Storage",   storageHash.slice(0,18)+"...",                                  BLUE],
                   ["Human Authorized", "FALSE",                                                        GREEN],
                   ["Admin Keys",       "NONE",                                                         GREEN],
                   ["Kill Switch",      "NONE",                                                         GREEN],
                   ["Upgradeable",      "FALSE",                                                        GREEN],
                 ].map(([k,v,c]) => <Row key={k} k={k} v={String(v)} c={String(c)} />)}
-                <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
-                  <a href={STORAGE_SCAN} target="_blank" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "11px", borderRadius: 9, background: `${PURPLE}0c`, border: `0.5px solid ${PURPLE}30`, fontFamily: "JetBrains Mono, monospace", fontSize: 10, fontWeight: 700, color: PURPLE, textDecoration: "none" }}>StorageScan</a>
-                  <a href={CHAIN_SCAN} target="_blank" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "11px", borderRadius: 9, background: `${CYAN}0c`, border: `0.5px solid ${CYAN}30`, fontFamily: "JetBrains Mono, monospace", fontSize: 10, fontWeight: 700, color: CYAN, textDecoration: "none" }}>Contract</a>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 14 }}>
+                  <a href={STORAGE_SCAN} target="_blank" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "11px", borderRadius: 9, background: `${PURPLE}0c`, border: `0.5px solid ${PURPLE}30`, fontFamily: "JetBrains Mono, monospace", fontSize: 9.5, fontWeight: 700, color: PURPLE, textDecoration: "none" }}>StorageScan</a>
+                  <a href={CHAIN_SCAN} target="_blank" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "11px", borderRadius: 9, background: `${CYAN}0c`, border: `0.5px solid ${CYAN}30`, fontFamily: "JetBrains Mono, monospace", fontSize: 9.5, fontWeight: 700, color: CYAN, textDecoration: "none" }}>Contract</a>
                 </div>
               </div>
             </GCard>
           )}
         </div>
       </div>
+
 
       <style>{`
         @keyframes ping{0%{transform:scale(1);opacity:.8}75%,100%{transform:scale(2);opacity:0}}
