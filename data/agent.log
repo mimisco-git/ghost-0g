@@ -1,0 +1,73 @@
+[2026-06-20T10:48:53.134Z] Agent wallet: 0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40
+[2026-06-20T10:48:53.135Z] Agent balance: 4.9994 0G
+[2026-06-20T10:48:53.136Z] Starting from cycle #1
+[2026-06-20T10:48:53.136Z] Cycle interval: 360s
+[2026-06-20T10:48:53.136Z] 
+====== GHOST CYCLE #1 STARTED ======
+[2026-06-20T10:48:53.136Z] Cycle #1: calling 0G Compute Router...
+[2026-06-20T10:48:55.805Z] Cycle #1: compute failed: 0G Compute error 402: {"error":{"message":"Insufficient balance","type":"payment_error","code":"insufficient_balance"},"request_id":"82241bd0-9d00-4008-ba02-fdd9ba13ca91"}
+[2026-06-20T10:53:08.989Z] Agent wallet: 0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40
+[2026-06-20T10:53:08.990Z] Agent balance: 1.9978 0G
+[2026-06-20T10:53:08.990Z] Starting from cycle #2
+[2026-06-20T10:53:08.990Z] Cycle interval: 360s
+[2026-06-20T10:53:08.991Z] 
+====== GHOST CYCLE #2 STARTED ======
+[2026-06-20T10:53:08.991Z] Cycle #2: calling 0G Compute Router...
+[2026-06-20T10:53:11.507Z] Cycle #2: compute failed: 0G Compute error 402: {"error":{"message":"Insufficient balance","type":"payment_error","code":"insufficient_balance"},"request_id":"087858b7-00cb-42eb-9156-eea4ee26a54b"}
+[2026-06-21T10:23:42.717Z] Agent wallet: 0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40
+[2026-06-21T10:23:42.719Z] Agent balance: 5.4924 0G
+[2026-06-21T10:23:42.719Z] GhostAnchor contract: 0x58282264D3e65F3026014026DFb2f428E141A0Bd
+[2026-06-21T10:23:42.720Z] Starting from cycle #3
+[2026-06-21T10:23:42.720Z] Interval: 360s (6 minutes)
+[2026-06-21T10:23:42.720Z] 
+====== GHOST CYCLE #3 STARTED ======
+[2026-06-21T10:23:42.720Z] Cycle #3: calling compute (OpenRouter / llama-3.1-8b)...
+[2026-06-21T10:23:44.089Z] Cycle #3: compute failed: Compute error 404: {"error":{"message":"This model is unavailable for free. The paid version is available now - use this slug instead: meta-llama/llama-3.1-8b-instruct","code":404},"user_id":"user_3FRUSvakpgP8aKGCGGE6nLja5SV"}
+[2026-06-21T10:25:20.743Z] Agent wallet: 0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40
+[2026-06-21T10:25:20.743Z] Agent balance: 5.4924 0G
+[2026-06-21T10:25:20.744Z] GhostAnchor contract: 0x58282264D3e65F3026014026DFb2f428E141A0Bd
+[2026-06-21T10:25:20.744Z] Starting from cycle #4
+[2026-06-21T10:25:20.744Z] Interval: 360s (6 minutes)
+[2026-06-21T10:25:20.744Z] 
+====== GHOST CYCLE #4 STARTED ======
+[2026-06-21T10:25:20.744Z] Cycle #4: calling compute (OpenRouter / llama-3.1-8b)...
+[2026-06-21T10:25:21.686Z] Cycle #4: compute failed: Compute error 400: {"error":{"message":"meta-llama/llama-3.3-70b:free is not a valid model ID","code":400},"user_id":"user_3FRUSvakpgP8aKGCGGE6nLja5SV"}
+[2026-06-21T10:25:51.739Z] Agent wallet: 0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40
+[2026-06-21T10:25:51.740Z] Agent balance: 5.4924 0G
+[2026-06-21T10:25:51.740Z] GhostAnchor contract: 0x58282264D3e65F3026014026DFb2f428E141A0Bd
+[2026-06-21T10:25:51.740Z] Starting from cycle #5
+[2026-06-21T10:25:51.740Z] Interval: 360s (6 minutes)
+[2026-06-21T10:25:51.740Z] 
+====== GHOST CYCLE #5 STARTED ======
+[2026-06-21T10:25:51.740Z] Cycle #5: calling compute (OpenRouter / llama-3.1-8b)...
+[2026-06-21T10:25:57.162Z] Cycle #5: inference done. 85in / 252out / 5422ms
+[2026-06-21T10:25:58.608Z] Cycle #5: content hash: 0xad2ef77a90c6df131bca6e920dad65c8ecff2edd1f9c225a94169379f90c1878
+[2026-06-21T10:25:58.609Z] Cycle #5: writing to 0G Storage...
+[2026-06-21T10:26:21.430Z] Cycle #5: 0G Storage hash: 0x61ee552144087afddeb2e2ef43ad7ef8e03a3210edd8929e02480a3affd4a2a8
+[2026-06-21T10:26:21.430Z] Cycle #5: verify at https://storagescan-galileo.0g.ai/submission/126985
+[2026-06-21T10:26:21.430Z] Cycle #5: anchoring on GhostAnchor contract 0x58282264D3e65F3026014026DFb2f428E141A0Bd...
+[2026-06-21T10:26:24.602Z] Cycle #5: tx sent: 0x34c80c6c81da5ee1b6d908034638fd6e726a648a194cdc0c1e3eeb49ad71157a
+[2026-06-21T10:26:39.147Z] Cycle #5: chain anchor error: transaction execution reverted (action="sendTransaction", data=null, reason=null, invocation=null, revert=null, transaction={ "data": "", "from": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40", "to": "0x58282264D3e65F3026014026DFb2f428E141A0Bd" }, receipt={ "_type": "TransactionReceipt", "blobGasPrice": null, "blobGasUsed": null, "blockHash": "0x251bbf432f375c19aa30796071eb04f76513391ff250459e401c294a53f1568c", "blockNumber": 39945975, "contractAddress": null, "cumulativeGasUsed": "100000", "from": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40", "gasPrice": "4000000007", "gasUsed": "100000", "hash": "0x34c80c6c81da5ee1b6d908034638fd6e726a648a194cdc0c1e3eeb49ad71157a", "index": 0, "logs": [  ], "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "root": null, "status": 0, "to": "0x58282264D3e65F3026014026DFb2f428E141A0Bd" }, code=CALL_EXCEPTION, version=6.13.1)
+[2026-06-21T10:26:39.148Z] ====== GHOST CYCLE #5 COMPLETE ======
+[2026-06-21T10:26:39.148Z] Preview: 0G just made a notable infrastructure move on its live **Aristotle Mainnet**: it migrated validator execution from **Get...
+[2026-06-21T10:26:39.148Z] Storage: 0x61ee552144087afddeb2e2ef43ad7ef8e03a3210edd8929e02480a3affd4a2a8
+[2026-06-21T10:31:57.511Z] Agent wallet: 0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40
+[2026-06-21T10:31:57.511Z] Agent balance: 5.4899 0G
+[2026-06-21T10:31:57.511Z] GhostAnchor contract: 0x58282264D3e65F3026014026DFb2f428E141A0Bd
+[2026-06-21T10:31:57.512Z] Starting from cycle #6
+[2026-06-21T10:31:57.512Z] Interval: 360s (6 minutes)
+[2026-06-21T10:31:57.512Z] 
+====== GHOST CYCLE #6 STARTED ======
+[2026-06-21T10:31:57.513Z] Cycle #6: calling compute (OpenRouter / llama-3.1-8b)...
+[2026-06-21T10:32:03.860Z] Cycle #6: inference done. 85in / 252out / 6347ms
+[2026-06-21T10:32:05.087Z] Cycle #6: content hash: 0xd1c6916d5297a1da0880669b5b13bc5a189fb8c0c0fb9f489b5cd6979c9b8196
+[2026-06-21T10:32:05.088Z] Cycle #6: writing to 0G Storage...
+[2026-06-21T10:32:24.396Z] Cycle #6: 0G Storage hash: 0x3a1cf298f55bc76ebc4605972df2fade8d08087ed6902a8247aee6eda6c542ce
+[2026-06-21T10:32:24.396Z] Cycle #6: verify at https://storagescan-galileo.0g.ai/submission/126985
+[2026-06-21T10:32:24.397Z] Cycle #6: anchoring on GhostAnchor contract 0x58282264D3e65F3026014026DFb2f428E141A0Bd...
+[2026-06-21T10:32:27.071Z] Cycle #6: tx sent: 0xccab5460aa7fffdf1ce528a533a30c23744bb674dde746f25923247abe8bdba3
+[2026-06-21T10:32:41.650Z] Cycle #6: anchored at block 39946705
+[2026-06-21T10:32:41.651Z] ====== GHOST CYCLE #6 COMPLETE ======
+[2026-06-21T10:32:41.651Z] Preview: A notable development is **0G’s live mainnet infrastructure upgrade**: the project moved validator execution from **Geth...
+[2026-06-21T10:32:41.651Z] Storage: 0x3a1cf298f55bc76ebc4605972df2fade8d08087ed6902a8247aee6eda6c542ce
+[2026-06-21T10:32:41.651Z] Chain TX: 0xccab5460aa7fffdf1ce528a533a30c23744bb674dde746f25923247abe8bdba3

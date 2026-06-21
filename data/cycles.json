@@ -1,0 +1,95 @@
+[
+  {
+    "cycle": 6,
+    "timestamp": "2026-06-21T10:31:57.512Z",
+    "status": "complete",
+    "compute": {
+      "output": "A notable development is **0G’s live mainnet infrastructure upgrade**: the project moved validator execution from **Geth to Reth**, while also adding **Sealed Inference** for cryptographically private AI compute and integrating **GLM-5** as the highest-ranked open-source model on decentralized infrastructure.[1]\n\nThis matters because it shows 0G shifting from *theory* to *operational optimization*: **Reth** is a Rust-based Ethereum client built for performance, so a validator migration suggests the team is prioritizing throughput and reliability at mainnet scale.[1] Pairing that with **Sealed Inference** signals a push toward verifiable, privacy-preserving AI execution rather than just decentralized storage or tokenized compute.[1] The **GLM-5** integration also indicates that frontier-grade open models are now being positioned as native workloads inside decentralized AI stacks, not merely as external tools.[1]\n\nIn the broader Web3 AI race, this is a concrete example of infrastructure hardening by a real project with a live network, rather than another speculative “AI agent” demo.[1]\n\n**GHOST VERDICT:** 0G is turning decentralized AI from a slogan into production infrastructure.",
+      "model": "perplexity/sonar",
+      "inputTok": 85,
+      "outputTok": 252,
+      "latencyMs": 6347
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40",
+      "balance": "5.4899"
+    },
+    "chain": {
+      "txHash": "0xccab5460aa7fffdf1ce528a533a30c23744bb674dde746f25923247abe8bdba3",
+      "blockNumber": 39946705,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "storageHash": "0x3a1cf298f55bc76ebc4605972df2fade8d08087ed6902a8247aee6eda6c542ce",
+    "human_authorized": false,
+    "contentHash": "0xd1c6916d5297a1da0880669b5b13bc5a189fb8c0c0fb9f489b5cd6979c9b8196"
+  },
+  {
+    "cycle": 5,
+    "timestamp": "2026-06-21T10:25:51.740Z",
+    "status": "complete",
+    "compute": {
+      "output": "0G just made a notable infrastructure move on its live **Aristotle Mainnet**: it migrated validator execution from **Geth** to **Reth**, a Rust-based client from Paradigm, while also rolling out **Sealed Inference** for cryptographically private AI compute and integrating **GLM-5** as the top-ranked open-source model on decentralized infrastructure.[1]\n\nThis matters because execution-client diversity is a real resilience and performance upgrade for Web3 networks, and the Reth switch signals 0G is optimizing for throughput and maintainability rather than treating “decentralized AI” as just a branding layer.[1] The broader 0G stack already spans compute, storage, data availability, and an AI-oriented chain architecture, so the mainnet upgrade strengthens the substrate for agentic apps and verifiable inference workloads.[11][8]\n\nIf the Sealed Inference layer performs as advertised, 0G is moving toward a model where AI outputs are not only decentralized but *cryptographically private*—a combination most competing AI-chain narratives still lack.[1][11]\n\n**GHOST VERDICT: 0G is turning decentralized AI from a demo into a hardened mainnet stack.**",
+      "model": "perplexity/sonar",
+      "inputTok": 85,
+      "outputTok": 252,
+      "latencyMs": 5422
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40",
+      "balance": "5.4924"
+    },
+    "chain": {
+      "error": "transaction execution reverted (action=\"sendTransaction\", data=null, reason=null, invocation=null, revert=null, transaction={ \"data\": \"\", \"from\": \"0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40\", \"to\": \"0x58282264D3e65F3026014026DFb2f428E141A0Bd\" }, receipt={ \"_type\": \"TransactionReceipt\", \"blobGasPrice\": null, \"blobGasUsed\": null, \"blockHash\": \"0x251bbf432f375c19aa30796071eb04f76513391ff250459e401c294a53f1568c\", \"blockNumber\": 39945975, \"contractAddress\": null, \"cumulativeGasUsed\": \"100000\", \"from\": \"0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40\", \"gasPrice\": \"4000000007\", \"gasUsed\": \"100000\", \"hash\": \"0x34c80c6c81da5ee1b6d908034638fd6e726a648a194cdc0c1e3eeb49ad71157a\", \"index\": 0, \"logs\": [  ], \"logsBloom\": \"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\", \"root\": null, \"status\": 0, \"to\": \"0x58282264D3e65F3026014026DFb2f428E141A0Bd\" }, code=CALL_EXCEPTION, version=6.13.1)"
+    },
+    "storageHash": "0x61ee552144087afddeb2e2ef43ad7ef8e03a3210edd8929e02480a3affd4a2a8",
+    "human_authorized": false,
+    "contentHash": "0xad2ef77a90c6df131bca6e920dad65c8ecff2edd1f9c225a94169379f90c1878"
+  },
+  {
+    "cycle": 4,
+    "timestamp": "2026-06-21T10:25:20.744Z",
+    "status": "compute_failed",
+    "compute": {
+      "error": "Compute error 400: {\"error\":{\"message\":\"meta-llama/llama-3.3-70b:free is not a valid model ID\",\"code\":400},\"user_id\":\"user_3FRUSvakpgP8aKGCGGE6nLja5SV\"}"
+    },
+    "wallet": null,
+    "chain": null,
+    "storageHash": null,
+    "human_authorized": false
+  },
+  {
+    "cycle": 3,
+    "timestamp": "2026-06-21T10:23:42.720Z",
+    "status": "compute_failed",
+    "compute": {
+      "error": "Compute error 404: {\"error\":{\"message\":\"This model is unavailable for free. The paid version is available now - use this slug instead: meta-llama/llama-3.1-8b-instruct\",\"code\":404},\"user_id\":\"user_3FRUSvakpgP8aKGCGGE6nLja5SV\"}"
+    },
+    "wallet": null,
+    "chain": null,
+    "storageHash": null,
+    "human_authorized": false
+  },
+  {
+    "cycle": 2,
+    "timestamp": "2026-06-20T10:53:08.991Z",
+    "status": "compute_failed",
+    "compute": {
+      "error": "0G Compute error 402: {\"error\":{\"message\":\"Insufficient balance\",\"type\":\"payment_error\",\"code\":\"insufficient_balance\"},\"request_id\":\"087858b7-00cb-42eb-9156-eea4ee26a54b\"}"
+    },
+    "wallet": null,
+    "chain": null,
+    "human_authorized": false
+  },
+  {
+    "cycle": 1,
+    "timestamp": "2026-06-20T10:48:53.136Z",
+    "status": "compute_failed",
+    "compute": {
+      "error": "0G Compute error 402: {\"error\":{\"message\":\"Insufficient balance\",\"type\":\"payment_error\",\"code\":\"insufficient_balance\"},\"request_id\":\"82241bd0-9d00-4008-ba02-fdd9ba13ca91\"}"
+    },
+    "wallet": null,
+    "chain": null,
+    "human_authorized": false
+  }
+]
