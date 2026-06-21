@@ -798,23 +798,16 @@ function MobileHome() {
 
 export default function Home() {
   const isMobile = useIsMobile();
-  if (isMobile) return <MobileHome />;
 
-  // ── DESKTOP ONLY below this line ────────────────────────────────────────
+  // ALL hooks before any conditional return (React rules of hooks)
   const [cycles,setCycles]=useState(0);
   const [storageHash]=useState("0xd967a299b7e5f34da189b0e4d5c146bf4cee5980265374cbd0d2e808fe52ba5a");
   const [lines,setLines]=useState<{tag:string;tc:string;msg:string;time:string}[]>([]);
   const feedRef=useRef<HTMLDivElement>(null);
   const idxRef=useRef(0);
-
   const {scrollY}=useScroll();
   const rawY=useTransform(scrollY,[0,700],[0,-80]);
   const heroY=useSpring(rawY,{stiffness:80,damping:22});
-
-  useEffect(()=>{
-    async function load(){try{const r=await fetch("/api/stats",{signal:AbortSignal.timeout(3000)});const j=await r.json();if(j.ok)setCycles(j.data?.completedCycles??0);}catch{}}
-    load();setInterval(load,30000);
-  },[]);
 
   const logs=[
     {tag:"COMPUTE",tc:CYAN,msg:"TEE inference · GLM-5-FP8 · AMD SEV-SNP enclave"},
@@ -830,12 +823,20 @@ export default function Home() {
   function getTime(){const d=new Date();return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;}
 
   useEffect(()=>{
+    async function load(){try{const r=await fetch("/api/stats",{signal:AbortSignal.timeout(3000)});const j=await r.json();if(j.ok)setCycles(j.data?.completedCycles??0);}catch{}}
+    load();const si=setInterval(load,30000);return()=>clearInterval(si);
+  },[]);
+
+  useEffect(()=>{
     setLines(logs.slice(0,3).map(l=>({...l,time:getTime()})));idxRef.current=3;
     const iv=setInterval(()=>{setLines(prev=>[...prev.slice(-22),{...logs[idxRef.current%logs.length],time:getTime()}]);idxRef.current++;},2800);
     return ()=>clearInterval(iv);
   },[]);
 
   useEffect(()=>{if(feedRef.current)feedRef.current.scrollTop=feedRef.current.scrollHeight;},[lines]);
+
+  // Safe to branch now: all hooks have been called
+  if (isMobile) return <MobileHome />;
 
   const arch=[
     {tag:"0G Compute",color:CYAN,title:"Verifiable inference",body:"Every inference runs inside a Confidential VM with AMD SEV-SNP. TEEML attestation cryptographically proves the exact model ran unmodified. Not even 0G sees the input."},
