@@ -1,0 +1,15 @@
+services:
+  - type: worker
+    name: ghost-agent
+    runtime: node
+    buildCommand: npm install --legacy-peer-deps
+    startCommand: node agent/index.js
+    envVars:
+      - key: PRIVATE_KEY
+        sync: false
+      - key: OPENROUTER_KEY
+        sync: false
+      - key: RPC_URL
+        value: https://evmrpc-testnet.0g.ai
+      - key: CONTRACT_ADDRESS
+        value: 0x58282264D3e65F3026014026DFb2f428E141A0Bd
