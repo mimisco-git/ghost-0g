@@ -367,8 +367,8 @@ const SHARED_CSS = `
 `;
 
 // ── MOBILE GLASS CARD ────────────────────────────────────────────────────────
-// ── MOBILE HOME: Gemini blueprint applied ────────────────────────────────────
-// SVG ghost (no PNG), touch tilt, vertical telemetry stack, no orbit rings
+
+// ── MOBILE HOME: All Gemini audit fixes applied ──────────────────────────────
 function MobileHome() {
   const [cycles, setCycles] = useState(0);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -378,9 +378,7 @@ function MobileHome() {
   const feedRef = useRef<HTMLDivElement>(null);
   const idxRef = useRef(0);
   const storageHash = "0xd967a299b7e5f34da189b0e4d5c146bf4cee5980265374cbd0d2e808fe52ba5a";
-  const P = 20;
 
-  // Fetch stats
   useEffect(() => {
     async function load() {
       try {
@@ -394,7 +392,6 @@ function MobileHome() {
     return () => clearInterval(iv);
   }, []);
 
-  // Touch tilt handler per Gemini blueprint
   function handleMove(clientX: number, clientY: number) {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -403,15 +400,14 @@ function MobileHome() {
     setTilt({ x: Math.max(-1, Math.min(1, x)), y: Math.max(-1, Math.min(1, y)) });
   }
 
-  // Live feed
   const logs = [
-    {tag:"COMPUTE",tc:CYAN,msg:"TEE inference · GLM-5-FP8 · AMD SEV-SNP"},
-    {tag:"COMPUTE",tc:CYAN,msg:"TEEML attestation · signature valid"},
-    {tag:"WALLET",tc:"#f87171",msg:"Deducted 0.0012 0G · no human signed"},
-    {tag:"STORAGE",tc:PURPLE,msg:"Record written to 0G Storage"},
-    {tag:"CHAIN",tc:AMBER,msg:"Hash anchored · human_authorized: FALSE"},
-    {tag:"COMPUTE",tc:CYAN,msg:"New cycle · time-lock trigger fired"},
-    {tag:"STORAGE",tc:PURPLE,msg:"Memory updated · no delete permission"},
+    {tag:"COMPUTE",tc:CYAN,   msg:"TEE inference · GLM-5-FP8 · AMD SEV-SNP"},
+    {tag:"COMPUTE",tc:CYAN,   msg:"TEEML attestation · signature valid"},
+    {tag:"WALLET", tc:"#f87171", msg:"Deducted 0.0012 0G · no human signed"},
+    {tag:"STORAGE",tc:PURPLE, msg:"Record written to 0G Storage"},
+    {tag:"CHAIN",  tc:AMBER,  msg:"Hash anchored · human_authorized: FALSE"},
+    {tag:"COMPUTE",tc:CYAN,   msg:"New cycle · time-lock trigger fired"},
+    {tag:"STORAGE",tc:PURPLE, msg:"Memory updated · no delete permission"},
   ];
   function pad(n: number) { return n < 10 ? "0"+n : ""+n; }
   function getTime() { const d = new Date(); return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
@@ -426,36 +422,63 @@ function MobileHome() {
     return () => clearInterval(iv);
   }, []);
 
-  useEffect(() => { if (feedRef.current) feedRef.current.scrollTop = feedRef.current.scrollHeight; }, [lines]);
+  useEffect(() => {
+    if (feedRef.current) feedRef.current.scrollTop = feedRef.current.scrollHeight;
+  }, [lines]);
 
-  // Ghost SVG tilt transform
   const ghostTransform = `perspective(1000px) rotateY(${tilt.x * 10}deg) rotateX(${-tilt.y * 10}deg)`;
 
-  // Shared glass row style
-  const glassRow = (accent: string) => ({
-    background: "rgba(11,16,29,0.7)",
+  // Gemini fix 3: gradient border cards, lighter top, darker bottom
+  const glassCard = (accent: string) => ({
+    background: "rgba(9,14,26,0.5)",
     backdropFilter: "saturate(180%) blur(20px)",
     WebkitBackdropFilter: "saturate(180%) blur(20px)",
     border: "0.5px solid rgba(255,255,255,0.08)",
-    borderRadius: 12,
+    borderRadius: 14,
     padding: "14px 16px",
     display: "flex",
     alignItems: "center" as const,
     justifyContent: "space-between" as const,
-    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.07), 0 4px 16px rgba(0,0,0,0.4), 0 0 0 0.5px ${accent}10 inset`,
+    // Gemini: top specular rim = lighter, bottom = darker, creates OLED depth
+    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.4), 0 0 0 0.5px ${accent}10 inset`,
+    position: "relative" as const,
+    overflow: "hidden" as const,
   });
+
+  // Gradient border section card: lighter top edge, darker bottom
+  const sectionCard = {
+    background: "rgba(9,14,26,0.4)",
+    border: "none",
+    borderRadius: 14,
+    overflow: "hidden" as const,
+    position: "relative" as const,
+    // The gradient border effect via box-shadow
+    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.06), 0 16px 32px rgba(0,0,0,0.4)",
+  };
+
+  const P = 20;
 
   return (
     <div
       ref={containerRef}
       onMouseMove={e => handleMove(e.clientX, e.clientY)}
       onTouchMove={e => { if (e.touches.length > 0) handleMove(e.touches[0].clientX, e.touches[0].clientY); }}
-      style={{ background: "#020408", color: WHITE, fontFamily: "-apple-system,'SF Pro Display',Inter,'Helvetica Neue',sans-serif", WebkitFontSmoothing: "antialiased", overflowX: "hidden", minHeight: "100vh", userSelect: "none" }}
+      style={{
+        background: "#020408",
+        color: WHITE,
+        fontFamily: "-apple-system,'SF Pro Display',Inter,'Helvetica Neue',sans-serif",
+        WebkitFontSmoothing: "antialiased",
+        overflowX: "hidden",
+        minHeight: "100vh",
+        // Gemini: dot grid background for depth
+        backgroundImage: "radial-gradient(rgba(31,41,61,0.8) 1px, transparent 1px)",
+        backgroundSize: "24px 24px",
+      }}
     >
       <Particles />
 
       {/* NAV */}
-      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", padding: `0 ${P}px`, background: "rgba(2,4,8,0.88)", backdropFilter: "saturate(200%) blur(40px)", WebkitBackdropFilter: "saturate(200%) blur(40px)", borderBottom: "0.5px solid rgba(255,255,255,0.08)", boxShadow: "inset 0 -0.5px 0 rgba(255,255,255,0.04)" }}>
+      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", padding: `0 ${P}px`, background: "rgba(2,4,8,0.92)", backdropFilter: "saturate(200%) blur(40px)", WebkitBackdropFilter: "saturate(200%) blur(40px)", borderBottom: "0.5px solid rgba(255,255,255,0.07)", boxShadow: "inset 0 -0.5px 0 rgba(255,255,255,0.03)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
           <div style={{ width: 28, height: 28, borderRadius: 7, overflow: "hidden", background: "#0a0f1a", display: "flex", alignItems: "center", justifyContent: "center", border: "0.5px solid rgba(31,41,61,0.6)" }}>
             <img src="/logo2.png" alt="Ghost" style={{ width: 32, height: 32, objectFit: "cover", objectPosition: "center 10%", mixBlendMode: "screen" }} />
@@ -467,118 +490,136 @@ function MobileHome() {
         </a>
       </nav>
 
-      {/* HERO: full viewport, centered column */}
-      <section style={{ paddingTop: 52, minHeight: "100svh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: `84px ${P}px 60px`, position: "relative", zIndex: 10, textAlign: "center" }}>
+      {/* HERO: Gemini fix 1: proper top padding so label never clips into ghost */}
+      <section style={{
+        paddingTop: 52,
+        minHeight: "100svh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "space-between",
+        // Fix 1: pt-20 (80px above nav) gives label its own space above ghost
+        padding: `${52 + 28}px ${P}px 48px`,
+        position: "relative",
+        zIndex: 10,
+        textAlign: "center",
+      }}>
 
-        {/* Eyebrow */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15, duration: 0.6 }}>
-          <span style={{ display: "inline-block", fontFamily: "JetBrains Mono,monospace", fontSize: 9, fontWeight: 700, letterSpacing: "0.25em", color: CYAN, textTransform: "uppercase" as const, padding: "4px 12px", borderRadius: 6, background: `${CYAN}08`, border: `0.5px solid ${CYAN}20`, marginBottom: 24 }}>
+        {/* Fix 1: Top metadata ISOLATED above ghost, never overlapping */}
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.6 }} style={{ width: "100%", maxWidth: 320, marginBottom: 20 }}>
+          <span style={{ display: "inline-block", fontFamily: "JetBrains Mono,monospace", fontSize: 9, fontWeight: 700, letterSpacing: "0.25em", color: CYAN, textTransform: "uppercase" as const, padding: "5px 14px", borderRadius: 6, background: `${CYAN}08`, border: `0.5px solid ${CYAN}20` }}>
             Zero Cup 2026 - Built on 0G
           </span>
         </motion.div>
 
-        {/* Ghost SVG: touch-tilt reactive, Gemini zero-pixel blueprint */}
+        {/* Ghost SVG: centered, contained, never overlaps text */}
         <motion.div
           initial={{ opacity: 0, scale: 0.88, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-          style={{ marginBottom: 20, position: "relative", willChange: "transform" }}
+          style={{ position: "relative", marginBottom: 20, width: "100%", maxWidth: 280, display: "flex", flexDirection: "column", alignItems: "center" }}
         >
-          {/* Ambient glow behind ghost */}
-          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 220, height: 220, borderRadius: "50%", background: `radial-gradient(ellipse, ${CYAN}18 0%, transparent 70%)`, filter: "blur(24px)", pointerEvents: "none", animation: "gB 5s ease-in-out infinite" }} />
+          {/* Ambient glow */}
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-60%)", width: 200, height: 200, borderRadius: "50%", background: `radial-gradient(ellipse, ${CYAN}15 0%, transparent 70%)`, filter: "blur(28px)", pointerEvents: "none", animation: "gB 5s ease-in-out infinite" }} />
 
-          {/* SVG Ghost: Gemini vector blueprint, 8K sharp on all screens */}
+          {/* Ghost SVG: vector sharp on all densities */}
           <div style={{ transform: ghostTransform, transition: "transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94)", willChange: "transform", position: "relative", zIndex: 2, animation: "gF 7s ease-in-out infinite" }}>
-            <svg viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: 160, height: 200, filter: `drop-shadow(0 0 28px ${CYAN}55) drop-shadow(0 0 56px ${CYAN}22)` }}>
+            <svg viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: 140, height: 182, filter: `drop-shadow(0 0 24px ${CYAN}55) drop-shadow(0 0 48px ${CYAN}22)` }}>
               <path
                 d="M50 5C25 5 5 25 5 55V115C5 120 12 122 16 118C21 113 29 113 34 118C39 123 47 123 52 118C57 113 65 113 70 118C75 123 83 123 88 118C92 114 95 116 95 121V55C95 25 75 5 50 5Z"
-                fill="url(#ghostGrad)"
+                fill="url(#gPremium)"
               />
-              {/* Left eye socket */}
-              <circle cx="34" cy="53" r="7" fill="#050505" />
-              {/* Left iris: cyan radial gradient */}
-              <circle cx="34" cy="53" r="3.5" fill="url(#irisL)" />
-              <circle cx="35.5" cy="51.5" r="1" fill="#fff" opacity="0.9" />
-              {/* Right eye socket */}
-              <circle cx="66" cy="53" r="7" fill="#050505" />
-              {/* Right iris */}
-              <circle cx="66" cy="53" r="3.5" fill="url(#irisR)" />
-              <circle cx="67.5" cy="51.5" r="1" fill="#fff" opacity="0.9" />
+              <circle cx="34" cy="53" r="6.5" fill="#040404" />
+              <circle cx="34" cy="53" r="3.2" fill="url(#iL)" />
+              <circle cx="35.5" cy="51.5" r="1.1" fill="#fff" opacity="0.92" />
+              <circle cx="66" cy="53" r="6.5" fill="#040404" />
+              <circle cx="66" cy="53" r="3.2" fill="url(#iR)" />
+              <circle cx="67.5" cy="51.5" r="1.1" fill="#fff" opacity="0.92" />
               <defs>
-                <linearGradient id="ghostGrad" x1="50" y1="5" x2="50" y2="125" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#ffffff" stopOpacity="0.97" />
-                  <stop offset="0.55" stopColor="#d4f5ef" />
-                  <stop offset="0.82" stopColor="#9fd8cc" />
-                  <stop offset="1" stopColor="#3ca68e" />
+                <linearGradient id="gPremium" x1="50" y1="5" x2="50" y2="125" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#ffffff" stopOpacity="0.98" />
+                  <stop offset="0.6" stopColor="#ccfbf1" />
+                  <stop offset="0.85" stopColor="#5eead4" />
+                  <stop offset="1" stopColor="#2dd4bf" />
                 </linearGradient>
-                <radialGradient id="irisL" cx="35%" cy="30%" r="60%">
-                  <stop stopColor="#00FFD1" />
-                  <stop offset="0.6" stopColor="#00c8a8" />
-                  <stop offset="1" stopColor="#004d42" />
+                <radialGradient id="iL" cx="35%" cy="30%" r="60%">
+                  <stop stopColor="#00FFD1" /><stop offset="0.55" stopColor="#00c8a8" /><stop offset="1" stopColor="#004d42" />
                 </radialGradient>
-                <radialGradient id="irisR" cx="35%" cy="30%" r="60%">
-                  <stop stopColor="#00FFD1" />
-                  <stop offset="0.6" stopColor="#00c8a8" />
-                  <stop offset="1" stopColor="#004d42" />
+                <radialGradient id="iR" cx="35%" cy="30%" r="60%">
+                  <stop stopColor="#00FFD1" /><stop offset="0.55" stopColor="#00c8a8" /><stop offset="1" stopColor="#004d42" />
                 </radialGradient>
               </defs>
             </svg>
-            {/* Brand text under ghost */}
-            <div style={{ textAlign: "center", marginTop: 8 }}>
-              <span style={{ display: "block", fontFamily: "JetBrains Mono,monospace", fontSize: 18, fontWeight: 900, letterSpacing: "0.25em", color: WHITE, textTransform: "uppercase" as const }}>GHOST</span>
-              <span style={{ display: "block", fontFamily: "JetBrains Mono,monospace", fontSize: 8, letterSpacing: "0.3em", color: MUTED, textTransform: "uppercase" as const, marginTop: 2 }}>AUTONOMOUS AI</span>
-            </div>
+          </div>
+
+          {/* Brand text: tight under ghost */}
+          <div style={{ marginTop: 10, textAlign: "center" }}>
+            <span style={{ display: "block", fontFamily: "JetBrains Mono,monospace", fontSize: 17, fontWeight: 900, letterSpacing: "0.3em", color: WHITE, textTransform: "uppercase" as const }}>GHOST</span>
+            <span style={{ display: "block", fontFamily: "JetBrains Mono,monospace", fontSize: 7.5, letterSpacing: "0.28em", color: MUTED, textTransform: "uppercase" as const, marginTop: 3 }}>AUTONOMOUS AI</span>
           </div>
         </motion.div>
 
-        {/* H1 */}
-        <motion.h1 initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.9, ease: [0.16,1,0.3,1] }} style={{ fontSize: "clamp(30px,8vw,46px)", fontWeight: 800, letterSpacing: "-0.05em", lineHeight: 1.06, margin: "0 0 14px" }}>
-          The AI that<br />
-          <span style={{ color: "transparent", backgroundImage: `linear-gradient(135deg, ${WHITE}, #c2f7ec, #3ca68e)`, WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            cannot be stopped.
-          </span>
-        </motion.h1>
+        {/* Fix 2: headline constrained to 280px, tracking tight, no bad wraps */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.9, ease: [0.16,1,0.3,1] }} style={{ width: "100%", maxWidth: 320, display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 20 }}>
+          <h1 style={{
+            fontSize: "clamp(28px,7.5vw,38px)",
+            fontWeight: 800,
+            letterSpacing: "-0.04em", // Gemini: compress tracking for premium editorial
+            lineHeight: 1.08,
+            margin: "0 0 14px",
+            // Fix 2: explicit max width stops bad line breaks
+            maxWidth: 280,
+            textAlign: "center",
+          }}>
+            The AI that cannot<br />be{" "}
+            <span style={{ color: "transparent", backgroundImage: `linear-gradient(135deg, ${WHITE}, #ccfbf1, #2dd4bf)`, WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent", filter: "drop-shadow(0 0 20px rgba(0,255,204,0.3))" }}>
+              stopped.
+            </span>
+          </h1>
 
-        {/* Sub */}
-        <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.8 }} style={{ fontSize: 14, color: MUTED, fontWeight: 300, lineHeight: 1.75, margin: "0 0 28px", maxWidth: 300 }}>
-          Autonomous agent inside 0G&apos;s TEE. <strong style={{ color: WHITE, fontWeight: 500 }}>Pays for its own compute.</strong> No admin key. No kill switch.
-        </motion.p>
+          <p style={{ fontSize: 13.5, color: MUTED, fontWeight: 300, lineHeight: 1.75, margin: 0, maxWidth: 300, textAlign: "center" }}>
+            Autonomous agent inside 0G&apos;s TEE.{" "}
+            <strong style={{ color: WHITE, fontWeight: 500 }}>Pays for its own compute.</strong>{" "}
+            Runs under a contract with{" "}
+            <strong style={{ color: WHITE, fontWeight: 500 }}>no admin key</strong>. No kill switch.
+          </p>
+        </motion.div>
 
         {/* CTAs: full width, stacked */}
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.58, duration: 0.7 }} style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%", maxWidth: 300, marginBottom: 28 }}>
-          <a href="/dashboard" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "15px 24px", borderRadius: 13, fontSize: 15, fontWeight: 700, textDecoration: "none", background: CYAN, color: "#000", boxShadow: `0 0 24px ${CYAN}44, inset 0 1px 0 rgba(255,255,255,0.4)`, letterSpacing: "-0.01em" }}>
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.48, duration: 0.7 }} style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%", maxWidth: 300, marginBottom: 24 }}>
+          <a href="/dashboard" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "15px 24px", borderRadius: 13, fontSize: 13, fontWeight: 700, textDecoration: "none", background: CYAN, color: "#000", boxShadow: `0 4px 24px ${CYAN}33, inset 0 1px 0 rgba(255,255,255,0.4)`, fontFamily: "JetBrains Mono,monospace", letterSpacing: "0.06em", textTransform: "uppercase" as const }}>
             Watch it think live
           </a>
-          <a href="https://github.com/mimisco-git/ghost-0g" target="_blank" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "14px 24px", borderRadius: 13, fontSize: 13, fontWeight: 500, textDecoration: "none", background: "rgba(255,255,255,0.05)", color: WHITE, border: "0.5px solid rgba(255,255,255,0.13)", backdropFilter: "blur(20px)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.1)", fontFamily: "JetBrains Mono,monospace", letterSpacing: "0.04em" }}>
+          <a href="https://github.com/mimisco-git/ghost-0g" target="_blank" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "14px 24px", borderRadius: 13, fontSize: 12, fontWeight: 700, textDecoration: "none", background: "rgba(11,17,32,0.5)", color: MUTED, border: "0.5px solid rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.3)", fontFamily: "JetBrains Mono,monospace", letterSpacing: "0.06em", textTransform: "uppercase" as const }}>
             Read the code
           </a>
         </motion.div>
 
-        {/* Gemini blueprint: vertical telemetry stack (not floating badges) */}
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.7 }} style={{ width: "100%", maxWidth: 300, display: "flex", flexDirection: "column", gap: 8 }}>
-          <div style={glassRow(CYAN)}>
-            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9.5, color: MUTED, letterSpacing: "0.12em", textTransform: "uppercase" as const, fontWeight: 600 }}>TEE Status</span>
-            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 11, color: CYAN, fontWeight: 700 }}>Enclave Active</span>
+        {/* Fix 3: Telemetry cards with gradient border depth */}
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.62, duration: 0.7 }} style={{ width: "100%", maxWidth: 300, display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+          <div style={glassCard(CYAN)}>
+            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, color: MUTED, letterSpacing: "0.14em", textTransform: "uppercase" as const, fontWeight: 700 }}>TEE Status</span>
+            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 11, color: CYAN, fontWeight: 700, letterSpacing: "0.06em" }}>Enclave Active</span>
           </div>
-          <div style={glassRow(PURPLE)}>
-            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9.5, color: MUTED, letterSpacing: "0.12em", textTransform: "uppercase" as const, fontWeight: 600 }}>Storage Network</span>
-            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 11, color: PURPLE, fontWeight: 700 }}>0G Network</span>
+          <div style={glassCard(PURPLE)}>
+            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, color: MUTED, letterSpacing: "0.14em", textTransform: "uppercase" as const, fontWeight: 700 }}>Storage Network</span>
+            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 11, color: PURPLE, fontWeight: 700, letterSpacing: "0.06em" }}>0G Network</span>
           </div>
-          <div style={glassRow("#ff4d6a")}>
-            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9.5, color: MUTED, letterSpacing: "0.12em", textTransform: "uppercase" as const, fontWeight: 600 }}>Human Authorized</span>
-            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 11, color: "#ff4d6a", fontWeight: 700 }}>FALSE</span>
+          <div style={glassCard("#f87171")}>
+            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, color: MUTED, letterSpacing: "0.14em", textTransform: "uppercase" as const, fontWeight: 700 }}>Human Authorized</span>
+            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 11, color: "#f87171", fontWeight: 700, letterSpacing: "0.06em" }}>FALSE</span>
           </div>
         </motion.div>
 
-        {/* Tags */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.85 }} style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center", marginTop: 20 }}>
+        {/* Tag pills */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.78 }} style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center" }}>
           {[[CYAN,"0G Compute"],[PURPLE,"0G Storage"],[AMBER,"0G Chain"],[MUTED,"ERC-7857"]].map(([c,l]) => (
             <span key={l} style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase" as const, padding: "4px 10px", borderRadius: 5, border: `0.5px solid ${c}30`, background: `${c}0c`, color: c }}>{l}</span>
           ))}
         </motion.div>
 
-        {/* Marquee: overlaid at hero bottom with fade mask */}
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 20, borderTop: "0.5px solid rgba(31,41,61,0.6)", background: "rgba(2,4,8,0.85)", backdropFilter: "blur(20px)", padding: "9px 0", overflow: "hidden", maskImage: "linear-gradient(to right, transparent, white 10%, white 90%, transparent)", WebkitMaskImage: "linear-gradient(to right, transparent, white 10%, white 90%, transparent)" }}>
+        {/* Marquee: overlaid at section bottom with edge fade */}
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 20, borderTop: "0.5px solid rgba(31,41,61,0.5)", background: "rgba(2,4,8,0.88)", backdropFilter: "blur(20px)", padding: "9px 0", overflow: "hidden", maskImage: "linear-gradient(to right, transparent, white 10%, white 90%, transparent)", WebkitMaskImage: "linear-gradient(to right, transparent, white 10%, white 90%, transparent)" }}>
           <div style={{ display: "flex", gap: 28, animation: "mq 26s linear infinite", whiteSpace: "nowrap", width: "max-content" }}>
             {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((t, i) => (
               <span key={i} style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, color: MUTED, letterSpacing: "0.12em", display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
@@ -591,10 +632,10 @@ function MobileHome() {
 
       {/* METRICS 2x2 */}
       <section style={{ padding: `0 ${P}px 24px` }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "rgba(255,255,255,0.07)", borderRadius: 14, overflow: "hidden", border: "0.5px solid rgba(255,255,255,0.08)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "rgba(255,255,255,0.07)", borderRadius: 14, overflow: "hidden", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07), 0 0 0 0.5px rgba(255,255,255,0.05)" }}>
           {[{val:cycles||0,label:"Cycles",sub:"TEE verified",c:CYAN},{val:"0",label:"Admin keys",sub:"No owner",c:CYAN},{val:"3",label:"0G layers",sub:"All load-bearing",c:WHITE},{val:"FALSE",label:"Human auth",sub:"Every cycle",c:CYAN}].map((m,i) => (
-            <div key={i} style={{ background: "rgba(255,255,255,0.02)", padding: "18px 14px", textAlign: "center", backdropFilter: "blur(40px)" }}>
-              <div style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase" as const, color: MUTED, marginBottom: 5 }}>{m.label}</div>
+            <div key={i} style={{ background: "rgba(255,255,255,0.02)", padding: "18px 14px", textAlign: "center" }}>
+              <div style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase" as const, color: MUTED, marginBottom: 5 }}>{m.label}</div>
               <div style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 24, fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1, color: m.c, marginBottom: 3 }}>{m.val}</div>
               <div style={{ fontSize: 9, color: DIMMED }}>{m.sub}</div>
             </div>
@@ -602,22 +643,27 @@ function MobileHome() {
         </div>
       </section>
 
-      {/* ARCHITECTURE */}
+      {/* ARCHITECTURE: Fix 3: gradient-border cards */}
       <section id="architecture" style={{ padding: `0 ${P}px 24px` }}>
-        <div style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, fontWeight: 600, letterSpacing: "0.18em", color: CYAN, textTransform: "uppercase" as const, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, fontWeight: 700, letterSpacing: "0.18em", color: CYAN, textTransform: "uppercase" as const, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
           <span style={{ width: 14, height: 1, background: CYAN, display: "inline-block" }} />Architecture
         </div>
         <h2 style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.035em", lineHeight: 1.1, margin: "0 0 14px" }}>Three layers. All load-bearing.</h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: 1, background: "rgba(255,255,255,0.07)", borderRadius: 14, overflow: "hidden", border: "0.5px solid rgba(255,255,255,0.08)" }}>
+        <div style={{ ...sectionCard, display: "flex", flexDirection: "column" }}>
           {[
-            {tag:"0G Compute",c:CYAN,title:"Verifiable inference",body:"Every inference runs inside a Confidential VM with AMD SEV-SNP. TEEML attestation proves the model ran unmodified."},
-            {tag:"0G Storage",c:PURPLE,title:"Permanent memory",body:"Every output is written to decentralized storage with a content hash. No delete function exists. History is permanent."},
-            {tag:"0G Chain",c:AMBER,title:"Ownerless contract",body:"No admin key. No pause function. No upgrade path. GHOST pays for its own compute. No human signature required."},
-            {tag:"Autonomous",c:MUTED,title:"Self-sustaining entity",body:"Wakes on-chain, runs inference, pays wallet, writes storage, anchors hash, sleeps. No human action needed."},
+            {tag:"0G Compute",c:CYAN,  title:"Verifiable inference",  body:"Every inference runs inside a Confidential VM with AMD SEV-SNP. TEEML attestation proves the model ran unmodified."},
+            {tag:"0G Storage",c:PURPLE,title:"Permanent memory",       body:"Every output is written to decentralized storage with a content hash. No delete function exists."},
+            {tag:"0G Chain",  c:AMBER, title:"Ownerless contract",     body:"No admin key. No pause function. No upgrade path. GHOST pays for its own compute."},
+            {tag:"Autonomous",c:MUTED, title:"Self-sustaining entity", body:"Wakes on-chain, runs inference, pays wallet, writes storage, anchors hash, sleeps. No human action."},
           ].map((c,i,arr) => (
-            <div key={i} style={{ background: "rgba(255,255,255,0.02)", padding: "16px", borderBottom: i < arr.length-1 ? "0.5px solid rgba(255,255,255,0.06)" : "none", position: "relative" }}>
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(to right, transparent, rgba(255,255,255,0.04), transparent)", pointerEvents: "none" }} />
-              <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase" as const, padding: "3px 9px", borderRadius: 5, border: `0.5px solid ${c.c}30`, background: `${c.c}0c`, color: c.c, display: "inline-block", marginBottom: 9 }}>{c.tag}</span>
+            <div key={i} style={{ padding: "16px", position: "relative",
+              // Fix 3: gradient border: lighter top, darker bottom per card
+              borderBottom: i < arr.length-1 ? "none" : undefined,
+              boxShadow: i < arr.length-1 ? "inset 0 -0.5px 0 rgba(0,0,0,0.5), inset 0 -1px 0 rgba(255,255,255,0.04)" : undefined,
+            }}>
+              {/* Subtle top highlight per card row */}
+              {i > 0 && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(to right, transparent, rgba(255,255,255,0.05) 20%, rgba(255,255,255,0.05) 80%, transparent)", pointerEvents: "none" }} />}
+              <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase" as const, padding: "3px 9px", borderRadius: 5, border: `0.5px solid ${c.c}30`, background: `${c.c}0c`, color: c.c, display: "inline-block", marginBottom: 9 }}>{c.tag}</span>
               <h3 style={{ fontSize: 15, fontWeight: 700, letterSpacing: "-0.02em", margin: "0 0 5px", color: WHITE }}>{c.title}</h3>
               <p style={{ fontSize: 12.5, color: MUTED, lineHeight: 1.65, margin: 0, fontWeight: 300 }}>{c.body}</p>
             </div>
@@ -627,24 +673,26 @@ function MobileHome() {
 
       {/* STEPS */}
       <section style={{ padding: `0 ${P}px 24px` }}>
-        <div style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, fontWeight: 600, letterSpacing: "0.18em", color: CYAN, textTransform: "uppercase" as const, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, fontWeight: 700, letterSpacing: "0.18em", color: CYAN, textTransform: "uppercase" as const, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
           <span style={{ width: 14, height: 1, background: CYAN, display: "inline-block" }} />Autonomous loop
         </div>
         <h2 style={{ fontSize: 20, fontWeight: 700, letterSpacing: "-0.03em", margin: "0 0 14px" }}>Every 6 minutes</h2>
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.1)", borderRadius: 14, overflow: "hidden", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.1), inset 0 -1px 0 rgba(0,0,0,0.2), 0 16px 32px rgba(0,0,0,0.4)", position: "relative" }}>
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 15% 0%, rgba(255,255,255,0.04) 0%, transparent 55%)", pointerEvents: "none", borderRadius: 14 }} />
+        <div style={{ ...sectionCard, display: "flex", flexDirection: "column" }}>
           {[
-            {n:"01",title:"Wake on-chain",pill:"0G Chain",pc:AMBER},
-            {n:"02",title:"Run inference in TEE",pill:"TEEML",pc:CYAN},
-            {n:"03",title:"Pay for compute",pill:"Auto pay",pc:AMBER},
-            {n:"04",title:"Write to 0G Storage",pill:"Storage",pc:PURPLE},
-            {n:"05",title:"Anchor hash on chain",pill:"Immutable",pc:AMBER},
-            {n:"06",title:"Sleep. Repeat.",pill:"Always on",pc:MUTED},
+            {n:"01",title:"Wake on-chain",     pill:"0G Chain", pc:AMBER},
+            {n:"02",title:"Inference in TEE",  pill:"TEEML",    pc:CYAN},
+            {n:"03",title:"Pay for compute",   pill:"Auto pay", pc:AMBER},
+            {n:"04",title:"Write to Storage",  pill:"Storage",  pc:PURPLE},
+            {n:"05",title:"Anchor on chain",   pill:"Immutable",pc:AMBER},
+            {n:"06",title:"Sleep. Repeat.",    pill:"Always on",pc:MUTED},
           ].map((s,i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 16px", borderBottom: i < 5 ? "0.5px solid rgba(255,255,255,0.06)" : "none", position: "relative" }}>
-              <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 10, color: DIMMED, width: 22, flexShrink: 0, fontWeight: 600 }}>{s.n}</span>
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 16px", position: "relative",
+              boxShadow: i < 5 ? "inset 0 -0.5px 0 rgba(0,0,0,0.5), inset 0 -1px 0 rgba(255,255,255,0.03)" : undefined,
+            }}>
+              {i > 0 && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(to right, transparent, rgba(255,255,255,0.04) 20%, rgba(255,255,255,0.04) 80%, transparent)", pointerEvents: "none" }} />}
+              <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 10, color: DIMMED, width: 22, flexShrink: 0, fontWeight: 700 }}>{s.n}</span>
               <span style={{ fontSize: 13.5, fontWeight: 600, flex: 1, letterSpacing: "-0.01em" }}>{s.title}</span>
-              <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8, fontWeight: 600, padding: "3px 9px", borderRadius: 5, border: `0.5px solid ${s.pc}30`, background: `${s.pc}0c`, color: s.pc, flexShrink: 0, letterSpacing: "0.07em" }}>{s.pill}</span>
+              <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8, fontWeight: 700, padding: "3px 9px", borderRadius: 5, border: `0.5px solid ${s.pc}30`, background: `${s.pc}0c`, color: s.pc, flexShrink: 0, letterSpacing: "0.07em" }}>{s.pill}</span>
             </div>
           ))}
         </div>
@@ -653,30 +701,35 @@ function MobileHome() {
       {/* 0G STORAGE */}
       <section id="storage" style={{ padding: `0 ${P}px 24px` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-          <div style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, fontWeight: 600, letterSpacing: "0.18em", color: PURPLE, textTransform: "uppercase" as const, display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, fontWeight: 700, letterSpacing: "0.18em", color: PURPLE, textTransform: "uppercase" as const, display: "flex", alignItems: "center", gap: 8 }}>
             <span style={{ width: 14, height: 1, background: PURPLE, display: "inline-block" }} />0G Storage
           </div>
-          <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, fontWeight: 600, padding: "3px 8px", borderRadius: 4, background: `${PURPLE}0c`, border: `0.5px solid ${PURPLE}30`, color: PURPLE, display: "flex", alignItems: "center", gap: 5 }}>
+          <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${PURPLE}0c`, border: `0.5px solid ${PURPLE}30`, color: PURPLE, display: "flex", alignItems: "center", gap: 5 }}>
             <span style={{ width: 4, height: 4, borderRadius: "50%", background: PURPLE, display: "inline-block", animation: "pulse 2.5s infinite" }} />LIVE
           </span>
         </div>
         <h2 style={{ fontSize: 20, fontWeight: 700, letterSpacing: "-0.03em", margin: "0 0 14px" }}>Every cycle, permanently stored.</h2>
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.1)", borderRadius: 14, overflow: "hidden", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.1), 0 16px 32px rgba(0,0,0,0.4)", position: "relative" }}>
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 15% 0%, rgba(255,255,255,0.04) 0%, transparent 55%)", pointerEvents: "none", borderRadius: 14 }} />
-          <div style={{ padding: "11px 16px", background: `${PURPLE}06`, borderBottom: "0.5px solid rgba(255,255,255,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center", position: "relative" }}>
-            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, color: MUTED, letterSpacing: "0.1em", textTransform: "uppercase" as const }}>Latest Record</span>
-            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, color: PURPLE, fontWeight: 600 }}>PERMANENT</span>
+        <div style={{ ...sectionCard, boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.4), 0 0 0 0.5px ${PURPLE}12, 0 16px 32px rgba(0,0,0,0.4)` }}>
+          <div style={{ padding: "11px 16px", background: `${PURPLE}06`, position: "relative", boxShadow: "inset 0 -0.5px 0 rgba(0,0,0,0.4), inset 0 -1px 0 rgba(255,255,255,0.03)" }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(to right, transparent, ${PURPLE}30 30%, ${PURPLE}30 70%, transparent)`, pointerEvents: "none" }} />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, color: MUTED, letterSpacing: "0.1em", textTransform: "uppercase" as const }}>Latest Record</span>
+              <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, color: PURPLE, fontWeight: 700 }}>PERMANENT</span>
+            </div>
           </div>
-          <div style={{ padding: "12px 16px", fontFamily: "JetBrains Mono,monospace", fontSize: 10.5, position: "relative" }}>
-            {[["network","0G Galileo Testnet",WHITE],["root_hash",storageHash.slice(0,20)+"...",PURPLE],["replicated","TRUE",CYAN],["deletable","FALSE",CYAN]].map(([k,v,c]) => (
-              <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: "0.5px solid rgba(255,255,255,0.05)", gap: 8 }}>
-                <span style={{ color: MUTED, flexShrink: 0 }}>{k}</span>
+          <div style={{ padding: "12px 16px", fontFamily: "JetBrains Mono,monospace", fontSize: 10.5 }}>
+            {[["network","0G Galileo Testnet",WHITE],["root_hash",storageHash.slice(0,20)+"...",PURPLE],["replicated","TRUE",CYAN],["deletable","FALSE",CYAN]].map(([k,v,c],i,arr) => (
+              <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", position: "relative",
+                boxShadow: i < arr.length-1 ? "inset 0 -0.5px 0 rgba(0,0,0,0.4), inset 0 -1px 0 rgba(255,255,255,0.03)" : undefined,
+              }}>
+                {i > 0 && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(to right, transparent, rgba(255,255,255,0.04) 20%, rgba(255,255,255,0.04) 80%, transparent)", pointerEvents: "none" }} />}
+                <span style={{ color: MUTED }}>{k}</span>
                 <span style={{ color: c, textAlign: "right" as const }}>{v}</span>
               </div>
             ))}
           </div>
-          <div style={{ padding: "12px 16px", borderTop: "0.5px solid rgba(255,255,255,0.06)", position: "relative" }}>
-            <a href="https://storagescan-galileo.0g.ai/submission/126985" target="_blank" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "12px", borderRadius: 10, background: `${PURPLE}0c`, border: `0.5px solid ${PURPLE}30`, fontFamily: "JetBrains Mono,monospace", fontSize: 11, fontWeight: 700, color: PURPLE, textDecoration: "none", boxShadow: `0 0 16px ${PURPLE}18` }}>
+          <div style={{ padding: "12px 16px", position: "relative", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)" }}>
+            <a href="https://storagescan-galileo.0g.ai/submission/126985" target="_blank" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "12px", borderRadius: 10, background: `${PURPLE}0c`, border: `0.5px solid ${PURPLE}30`, fontFamily: "JetBrains Mono,monospace", fontSize: 11, fontWeight: 700, color: PURPLE, textDecoration: "none", boxShadow: `0 0 16px ${PURPLE}18, inset 0 1px 0 rgba(255,255,255,0.06)` }}>
               Verify on StorageScan
             </a>
           </div>
@@ -685,53 +738,54 @@ function MobileHome() {
 
       {/* PROOF */}
       <section id="proof" style={{ padding: `0 ${P}px 24px` }}>
-        <div style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, fontWeight: 600, letterSpacing: "0.18em", color: CYAN, textTransform: "uppercase" as const, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, fontWeight: 700, letterSpacing: "0.18em", color: CYAN, textTransform: "uppercase" as const, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
           <span style={{ width: 14, height: 1, background: CYAN, display: "inline-block" }} />Proof
         </div>
         <h2 style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1.1, margin: "0 0 14px" }}>
           Don&apos;t trust us. <em style={{ color: CYAN, fontStyle: "normal" }}>Verify it.</em>
         </h2>
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.1)", borderRadius: 14, overflow: "hidden", boxShadow: `inset 0 1px 0 rgba(255,255,255,0.1), 0 16px 32px rgba(0,0,0,0.4), 0 0 0 0.5px ${CYAN}08 inset`, position: "relative" }}>
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 15% 0%, rgba(255,255,255,0.04) 0%, transparent 55%)", pointerEvents: "none", borderRadius: 14 }} />
-          <div style={{ padding: "11px 16px", background: `${CYAN}05`, borderBottom: "0.5px solid rgba(255,255,255,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center", position: "relative" }}>
-            <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, color: MUTED, textTransform: "uppercase" as const, letterSpacing: "0.1em" }}>Attestation Receipt</span>
-            <span style={{ display: "flex", alignItems: "center", gap: 5, fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, color: CYAN, fontWeight: 600 }}>
-              <span style={{ width: 4, height: 4, borderRadius: "50%", background: CYAN, display: "inline-block", animation: "pulse 2.5s infinite" }} />TEEML VERIFIED
-            </span>
+        <div style={{ ...sectionCard, boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.4), 0 0 0 0.5px ${CYAN}10, 0 16px 32px rgba(0,0,0,0.4)` }}>
+          <div style={{ padding: "11px 16px", background: `${CYAN}05`, position: "relative", boxShadow: "inset 0 -0.5px 0 rgba(0,0,0,0.4)" }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(to right, transparent, ${CYAN}25 30%, ${CYAN}25 70%, transparent)`, pointerEvents: "none" }} />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, color: MUTED, textTransform: "uppercase" as const, letterSpacing: "0.1em" }}>Attestation Receipt</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 5, fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, color: CYAN, fontWeight: 700 }}>
+                <span style={{ width: 4, height: 4, borderRadius: "50%", background: CYAN, display: "inline-block", animation: "pulse 2.5s infinite" }} />TEEML VERIFIED
+              </span>
+            </div>
           </div>
-          <div style={{ padding: "12px 16px", fontFamily: "JetBrains Mono,monospace", fontSize: 10.5, position: "relative" }}>
-            {[["agent","ghost-v1.0 · 0xD040...ed40",WHITE],["model","GLM-5-FP8 · 0G Compute",AMBER],["enclave","AMD SEV-SNP",CYAN],["human_auth","FALSE",CYAN],["tampered","FALSE",CYAN]].map(([k,v,c]) => (
-              <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: "0.5px solid rgba(255,255,255,0.05)", gap: 8 }}>
-                <span style={{ color: MUTED, flexShrink: 0 }}>{k}</span>
-                <span style={{ color: c, textAlign: "right" as const }}>{v}</span>
+          <div style={{ padding: "12px 16px", fontFamily: "JetBrains Mono,monospace", fontSize: 10.5 }}>
+            {[["agent","ghost-v1.0 · 0xD040...ed40",WHITE],["model","GLM-5-FP8 · 0G Compute",AMBER],["enclave","AMD SEV-SNP",CYAN],["human_auth","FALSE",CYAN],["tampered","FALSE",CYAN]].map(([k,v,c],i) => (
+              <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", position: "relative",
+                boxShadow: i < 4 ? "inset 0 -0.5px 0 rgba(0,0,0,0.4), inset 0 -1px 0 rgba(255,255,255,0.03)" : undefined,
+              }}>
+                {i > 0 && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(to right, transparent, rgba(255,255,255,0.03) 20%, rgba(255,255,255,0.03) 80%, transparent)", pointerEvents: "none" }} />}
+                <span style={{ color: MUTED }}>{k}</span><span style={{ color: c }}>{v}</span>
               </div>
             ))}
           </div>
-          <div style={{ padding: "12px 16px", borderTop: "0.5px solid rgba(255,255,255,0.06)", display: "flex", gap: 10, position: "relative" }}>
+          <div style={{ padding: "12px 16px", display: "flex", gap: 10, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)" }}>
             <a href="https://chainscan-galileo.0g.ai" target="_blank" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "11px", borderRadius: 9, background: `${CYAN}0c`, border: `0.5px solid ${CYAN}30`, fontFamily: "JetBrains Mono,monospace", fontSize: 11, fontWeight: 700, color: CYAN, textDecoration: "none" }}>0G Chain</a>
             <a href="https://storagescan-galileo.0g.ai/submission/126985" target="_blank" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "11px", borderRadius: 9, background: `${PURPLE}0c`, border: `0.5px solid ${PURPLE}30`, fontFamily: "JetBrains Mono,monospace", fontSize: 11, fontWeight: 700, color: PURPLE, textDecoration: "none" }}>StorageScan</a>
           </div>
         </div>
       </section>
 
-      {/* LIVE FEED: collapsible to save space */}
+      {/* LIVE FEED: collapsible */}
       <section style={{ padding: `0 ${P}px 24px` }}>
-        <button
-          onClick={() => setFeedVisible(v => !v)}
-          style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.1)", borderRadius: feedVisible ? "14px 14px 0 0" : 14, padding: "14px 16px", cursor: "pointer", color: WHITE, fontFamily: "JetBrains Mono,monospace", fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" as const, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)" }}
-        >
+        <button onClick={() => setFeedVisible(v => !v)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(9,14,26,0.5)", border: "0.5px solid rgba(255,255,255,0.08)", borderRadius: feedVisible ? "14px 14px 0 0" : 14, padding: "14px 16px", cursor: "pointer", color: WHITE, fontFamily: "JetBrains Mono,monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" as const, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07)" }}>
           <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <span style={{ width: 5, height: 5, borderRadius: "50%", background: CYAN, display: "inline-block", animation: "pulse 2s infinite" }} />Live agent feed
           </span>
-          <span style={{ color: MUTED, fontSize: 12, transform: feedVisible ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>▾</span>
+          <span style={{ color: MUTED, fontSize: 12, display: "inline-block", transform: feedVisible ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>&#9662;</span>
         </button>
         {feedVisible && (
-          <div style={{ background: "rgba(255,255,255,0.02)", border: "0.5px solid rgba(255,255,255,0.1)", borderTop: "none", borderRadius: "0 0 14px 14px", overflow: "hidden" }}>
+          <div style={{ background: "rgba(9,14,26,0.4)", border: "0.5px solid rgba(255,255,255,0.07)", borderTop: "none", borderRadius: "0 0 14px 14px", overflow: "hidden", boxShadow: "inset 0 -1px 0 rgba(255,255,255,0.04)" }}>
             <div ref={feedRef} style={{ padding: "10px 14px", height: 180, overflowY: "auto", fontFamily: "JetBrains Mono,monospace", display: "flex", flexDirection: "column", gap: 1 }}>
               {lines.map((l, i) => (
                 <div key={i} style={{ fontSize: 10, lineHeight: 1.85, display: "flex", gap: 7, alignItems: "flex-start" }}>
                   <span style={{ color: DIMMED, flexShrink: 0, width: 54, fontSize: 9.5 }}>{l.time}</span>
-                  <span style={{ flexShrink: 0, fontSize: 8, fontWeight: 600, padding: "2px 6px", borderRadius: 3, alignSelf: "center", background: `${l.tc}14`, color: l.tc, border: `0.5px solid ${l.tc}22`, letterSpacing: "0.06em", minWidth: 50, textAlign: "center" as const }}>{l.tag}</span>
+                  <span style={{ flexShrink: 0, fontSize: 8, fontWeight: 700, padding: "2px 6px", borderRadius: 3, alignSelf: "center", background: `${l.tc}14`, color: l.tc, border: `0.5px solid ${l.tc}22`, letterSpacing: "0.06em", minWidth: 50, textAlign: "center" as const }}>{l.tag}</span>
                   <span style={{ color: "rgba(243,244,246,0.38)", flex: 1 }}>{l.msg}</span>
                 </div>
               ))}
@@ -743,7 +797,7 @@ function MobileHome() {
       {/* CTA */}
       <section style={{ padding: `0 ${P}px 40px`, textAlign: "center" }}>
         <div style={{ background: `radial-gradient(ellipse at 50% 0%, ${CYAN}09 0%, transparent 70%)`, padding: "36px 16px 32px", borderRadius: 20 }}>
-          <div style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, fontWeight: 600, letterSpacing: "0.18em", color: CYAN, textTransform: "uppercase" as const, marginBottom: 12 }}>Zero Cup 2026</div>
+          <div style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, fontWeight: 700, letterSpacing: "0.18em", color: CYAN, textTransform: "uppercase" as const, marginBottom: 12 }}>Zero Cup 2026</div>
           <h2 style={{ fontSize: "clamp(30px,8vw,44px)", fontWeight: 800, letterSpacing: "-0.05em", lineHeight: 1.0, margin: "0 0 12px" }}>
             The first AI<br />no one can <span style={{ color: CYAN }}>kill.</span>
           </h2>
@@ -751,8 +805,8 @@ function MobileHome() {
             Not us. Not 0G. Not anyone. Once deployed, GHOST runs until its wallet empties.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 280, margin: "0 auto" }}>
-            <a href="https://0g.ai/arena/zero-cup" target="_blank" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "15px", borderRadius: 13, fontSize: 15, fontWeight: 700, textDecoration: "none", background: CYAN, color: "#000", boxShadow: `0 0 24px ${CYAN}44, inset 0 1px 0 rgba(255,255,255,0.4)` }}>Vote for GHOST</a>
-            <a href="/dashboard" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "13px", borderRadius: 13, fontSize: 12, fontWeight: 500, textDecoration: "none", background: "rgba(255,255,255,0.04)", color: WHITE, border: "0.5px solid rgba(255,255,255,0.12)", backdropFilter: "blur(20px)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.1)", fontFamily: "JetBrains Mono,monospace", letterSpacing: "0.04em" }}>Live dashboard</a>
+            <a href="https://0g.ai/arena/zero-cup" target="_blank" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "15px", borderRadius: 13, fontSize: 13, fontWeight: 700, textDecoration: "none", background: CYAN, color: "#000", boxShadow: `0 0 24px ${CYAN}44, inset 0 1px 0 rgba(255,255,255,0.4)`, fontFamily: "JetBrains Mono,monospace", letterSpacing: "0.06em", textTransform: "uppercase" as const }}>Vote for GHOST</a>
+            <a href="/dashboard" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "13px", borderRadius: 13, fontSize: 12, fontWeight: 700, textDecoration: "none", background: "rgba(9,14,26,0.5)", color: MUTED, border: "0.5px solid rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)", fontFamily: "JetBrains Mono,monospace", letterSpacing: "0.06em", textTransform: "uppercase" as const }}>Live dashboard</a>
           </div>
         </div>
       </section>
@@ -769,18 +823,18 @@ function MobileHome() {
           <p style={{ fontSize: 12, color: MUTED, lineHeight: 1.7, margin: "0 0 18px" }}>Verifiable compute. Permanent memory. No kill switch. Built on 0G.</p>
           <div style={{ display: "flex", gap: 28, marginBottom: 20 }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-              <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, fontWeight: 600, letterSpacing: "0.16em", color: MUTED, textTransform: "uppercase" as const, marginBottom: 2 }}>Project</span>
+              <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, fontWeight: 700, letterSpacing: "0.16em", color: MUTED, textTransform: "uppercase" as const, marginBottom: 2 }}>Project</span>
               {[["Architecture","#architecture"],["Storage","#storage"],["Proof","#proof"],["Dashboard","/dashboard"]].map(([l,h]) => <a key={l} href={h} style={{ fontSize: 12, color: MUTED, textDecoration: "none" }}>{l}</a>)}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-              <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, fontWeight: 600, letterSpacing: "0.16em", color: MUTED, textTransform: "uppercase" as const, marginBottom: 2 }}>Links</span>
+              <span style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 8.5, fontWeight: 700, letterSpacing: "0.16em", color: MUTED, textTransform: "uppercase" as const, marginBottom: 2 }}>Links</span>
               {[["GitHub","https://github.com/mimisco-git/ghost-0g"],["0G Docs","https://docs.0g.ai"],["Zero Cup","https://0g.ai/arena/zero-cup"],["StorageScan","https://storagescan-galileo.0g.ai"]].map(([l,h]) => <a key={l} href={h} target="_blank" style={{ fontSize: 12, color: MUTED, textDecoration: "none" }}>{l}</a>)}
             </div>
           </div>
           <div style={{ borderTop: "0.5px solid rgba(255,255,255,0.06)", paddingTop: 14, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
-              <p style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 11, fontWeight: 700, color: WHITE, margin: "0 0 2px" }}>GHOST · Zero Cup 2026</p>
-              <p style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, color: DIMMED, margin: 0 }}>2026 GHOST · 0G Ecosystem</p>
+              <p style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 11, fontWeight: 700, color: WHITE, margin: "0 0 2px" }}>GHOST - Zero Cup 2026</p>
+              <p style={{ fontFamily: "JetBrains Mono,monospace", fontSize: 9, color: DIMMED, margin: 0 }}>2026 GHOST - 0G Ecosystem</p>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               {SOCIALS.map(s => (
@@ -791,7 +845,10 @@ function MobileHome() {
         </div>
       </footer>
 
-      <style>{SHARED_CSS + `@keyframes gF{0%,100%{transform:translateY(0px)}50%{transform:translateY(-12px)}}`}</style>
+      <style>{SHARED_CSS + `
+        @keyframes gB{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+        @keyframes gF{0%,100%{transform:translateY(0px)}50%{transform:translateY(-12px)}}
+      `}</style>
     </div>
   );
 }
