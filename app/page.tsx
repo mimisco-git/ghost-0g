@@ -382,9 +382,9 @@ function MobileHome() {
   useEffect(() => {
     async function load() {
       try {
-        const r = await fetch("/api/stats", { signal: AbortSignal.timeout(3000) });
+        const r = await fetch("https://raw.githubusercontent.com/mimisco-git/ghost-0g/main/data/cycles.json?t=" + Date.now(), { signal: AbortSignal.timeout(5000) });
         const j = await r.json();
-        if (j.ok) setCycles(j.data?.completedCycles ?? 0);
+        if (Array.isArray(j)) setCycles(j.filter((c: any) => c.status === "complete").length);
       } catch {}
     }
     load();
@@ -880,7 +880,13 @@ export default function Home() {
   function getTime(){const d=new Date();return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;}
 
   useEffect(()=>{
-    async function load(){try{const r=await fetch("/api/stats",{signal:AbortSignal.timeout(3000)});const j=await r.json();if(j.ok)setCycles(j.data?.completedCycles??0);}catch{}}
+    async function load(){
+      try{
+        const r=await fetch("https://raw.githubusercontent.com/mimisco-git/ghost-0g/main/data/cycles.json?t="+Date.now(),{signal:AbortSignal.timeout(5000)});
+        const j=await r.json();
+        if(Array.isArray(j)) setCycles(j.filter((c:any)=>c.status==="complete").length);
+      }catch{}
+    }
     load();const si=setInterval(load,30000);return()=>clearInterval(si);
   },[]);
 
