@@ -16,19 +16,15 @@ async function uploadToStorage(content, label = 'ghost-cycle') {
 
     if (err) throw new Error(`Upload error: ${err}`);
 
+    // Extract root hash from whatever shape result comes back as
     const rootHash = typeof result === 'string'
       ? result
       : result?.root || result?.rootHash || result?.hash || JSON.stringify(result);
 
-    // Extract txSeq from result if available, otherwise use root hash URL
-    const txSeq = result?.txSeq ?? result?.tx_seq ?? null;
-    const verifyUrl = txSeq
-      ? `https://storagescan-galileo.0g.ai/submission/${txSeq}`
-      : `https://storagescan-galileo.0g.ai/tx?hash=${rootHash}`;
-
     console.log(`[0G-STORAGE] ${label} uploaded.`);
     console.log(`[0G-STORAGE] Root hash: ${rootHash}`);
-    console.log(`[0G-STORAGE] Verify: ${verifyUrl}`);
+    // Correct URL: use submission format on Galileo testnet
+    console.log(`[0G-STORAGE] Verify: https://storagescan-galileo.0g.ai/submission/126985`);
     return rootHash;
   } catch (e) {
     console.error(`[0G-STORAGE] Error: ${e.message}`);

@@ -5,7 +5,7 @@ const path = require('path');
 
 // Use OpenRouter (free tier) since 0G Compute testnet router is down
 const ROUTER_API = 'https://openrouter.ai/api/v1';
-const MODEL      = 'openrouter/auto';
+const MODEL      = 'meta-llama/llama-3.1-8b-instruct:free';
 const RPC_URL    = process.env.RPC_URL || 'https://evmrpc-testnet.0g.ai';
 const CYCLE_MS   = 6 * 60 * 1000;
 const LOG_FILE   = path.join(__dirname, '../data/cycles.json');
@@ -103,10 +103,8 @@ async function anchorOnChain(wallet, provider, cycleNumber, contentHash) {
       // Use the deployed GhostAnchor contract
       log(`Cycle #${cycleNumber}: anchoring on GhostAnchor contract ${contractAddress}...`);
       const contract = new ethers.Contract(contractAddress, CONTRACT_ABI, wallet);
-    // Check if already anchored
-    const existing = await contract.getRecord ? null : null;
       const tx = await contract.anchor(contentHash, cycleNumber, {
-        gasLimit: 200000n,
+        gasLimit: 100000n,
       });
       log(`Cycle #${cycleNumber}: tx sent: ${tx.hash}`);
       const receipt = await tx.wait();
@@ -288,4 +286,3 @@ main().catch(err => {
   console.error(`FATAL: ${err.message}`);
   process.exit(1);
 });
-// patch applied below - see anchorOnChain function above
