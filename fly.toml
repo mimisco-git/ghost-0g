@@ -1,0 +1,7 @@
+app = "ghost-0g-agent"
+primary_region = "jnb"
+
+[build]
+
+[processes]
+  worker = "node agent/index.js"
