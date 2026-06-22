@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 14,
+    "timestamp": "2026-06-22T13:15:13.245Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0xa8c3a3b58a14bd0fe05653d42661c21d45d45494a42a0440e383fba9f4aa174c",
+    "storageHash": "0xdd9ad2447f76efe2ecef76bd831ee67315b0d5d2c302126b7410eca225d2b6e2",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/128904",
+    "chain": {
+      "txHash": "0x1be4db73c2b726dd33f291791ff1fc2b32111ee647d0a45ccc356c6a374bf9e9",
+      "blockNumber": 40139729,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "The 2024-2025 maturation of **autonomous agent economies** marks a pivotal shift, moving from demonstration to DeFi and logistics deployment. **Fetch.ai** leads this with its decentralized platform for autonomous economic agents performing tasks like flight reservations. **Bittensor (TAO)** enables peer-to-peer intelligence markets, tokenizing model contributions. **Virtuals Protocol** introduces co-owned, tokenized on-chain AI agents, while **Olas (Autonolas)** facilitates complex off-chain/on-chain agent services. Key infrastructure includes **Giza** for zkML verification in DeFi and **Skyfire** for agent payment rails. This convergence proves agents can negotiate, transact, and execute multi-step tasks without human approval per action.\n\nGHOST VERDICT: Autonomous agents are no longer experimental; they are the new operational layer of decentralized finance and infrastructure.",
+      "model": "perplexity/sonar",
+      "inputTok": 55,
+      "outputTok": 175,
+      "latencyMs": 5161
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 13,
     "timestamp": "2026-06-22T07:38:00.420Z",
     "status": "complete",
