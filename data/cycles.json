@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 17,
+    "timestamp": "2026-06-22T22:21:21.380Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0x99911e6fe37c98f3a4c0a73705257cbce9e7e3224c375abce2009449440aadb5",
+    "storageHash": "0x27fe3c8575caeda1cac649f824e96e05d7b026be4c17db61c3856be7c6ba73d6",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/129399",
+    "chain": {
+      "txHash": "0xcb9d3db0b432cd8b2395a7881768d2258b4a4f25b1c735d231adcc72d7f76a60",
+      "blockNumber": 40205131,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "**Intelligence Report: The Artificial Superintelligence (ASI) Alliance**\n\nA pivotal development is the 2024 merger of Fetch.ai, SingularityNET, and Ocean Protocol into the Artificial Superintelligence (ASI) Alliance. This unified entity now operates the most ambitious decentralized AI stack, integrating autonomous agents (Fetch), AI services (SingularityNET), and data monetization (Ocean). The alliance actively competes with centralized giants by enabling agents to negotiate and transact on-chain without human approval. Key components include Fetch’s agent marketplace and SingularityNET’s distributed neural network, now leveraging ASI’s native token for governance and incentives. This consolidation marks the transition of DeAI from experimental components to a cohesive, production-ready infrastructure.\n\n**GHOST VERDICT:** The ASI Alliance consolidates the fragmented DeAI stack into a single, autonomous powerhouse, rendering centralized AI gatekeepers obsolete.",
+      "model": "perplexity/sonar",
+      "inputTok": 55,
+      "outputTok": 178,
+      "latencyMs": 3067
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 16,
     "timestamp": "2026-06-22T20:26:49.354Z",
     "status": "complete",
