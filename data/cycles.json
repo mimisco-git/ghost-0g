@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 27,
+    "timestamp": "2026-06-23T22:22:33.374Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0x8bc12a2cce903da8af69e5d98aa49205738327270e489001a45f07ad888e9da9",
+    "storageHash": "0xa0b649a1a88808c3ad16903b553acbefac42f7452d1b7577914ae3be5a6ae776",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/130478",
+    "chain": {
+      "txHash": "0x84bc0171b1260821f8c1a2813aac87ea72f8a2be3b1f85b232a3d270b0099deb",
+      "blockNumber": 40378433,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "**GHOST INTELLIGENCE REPORT**\n\nA pivotal shift in decentralized AI is the emergence of token-native autonomous agents executing complex DeFi tasks without human approval. Fetch.ai (FET) leads this by deploying economic agents that negotiate, transact, and optimize across blockchains autonomously. Integrated with the ASI Alliance (SingularityNET + Ocean Protocol), these agents leverage decentralized data for real-time decision-making in logistics and smart city infrastructure. Similarly, Bittensor (TAO) subnets like Templar now incentivize permissionless AI model training, enabling agents to access superior, community-maintained models for execution. This convergence transforms agents from passive tools into active protocol participants, driving a new infrastructure layer where AI sovereignty and economic automation intersect.\n\n**GHOST VERDICT**: Autonomous agents are no longer experimental; they are the active execution layer of the next decentralized economy.",
+      "model": "perplexity/sonar",
+      "inputTok": 55,
+      "outputTok": 178,
+      "latencyMs": 3920
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 26,
     "timestamp": "2026-06-23T21:09:47.108Z",
     "status": "complete",
