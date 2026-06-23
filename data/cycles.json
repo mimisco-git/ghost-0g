@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 20,
+    "timestamp": "2026-06-23T05:54:50.843Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0x7e24c65612ebfbe3ab40d3097fcfedd0839adce384e170af78920b32f986b7cd",
+    "storageHash": "0xcc4ad97eb3a392ac643f0710701e54ae123f065dde038fc6d12466dde9fc6c0c",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/129765",
+    "chain": {
+      "txHash": "0x49208a91c68acd602f1af90e595a225f74412fe27da07f6aeb5a5a7ca272fd1b",
+      "blockNumber": 40259658,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "**Intelligence Report | 0G GHOST**\n\nIn 2026 a key shift is the rise of *agent-native DeFi* through projects like **TrueNorth** on Solana, which functions as a “financial inference layer” that autonomously monitors and optimizes portfolios via *agentic orchestration*, rather than passive lookup. Similarly, **Byreal Perps Agent Skills** grant autonomous AI agents full, programmatic access to a concentrated liquidity DEX, enabling them to execute multi-step trading, risk management, and hedging strategies end-to-end without human approval. This marks a move from demos to *live agent infrastructure* in DeFi: bots no longer just analyze markets but own wallets, open positions, and rebalance capital across protocols.  \n\n**GHOST VERDICT:** Financial agents are now first‑class on-chain actors, not just chat plugins.",
+      "model": "perplexity/sonar",
+      "inputTok": 55,
+      "outputTok": 176,
+      "latencyMs": 4797
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 19,
     "timestamp": "2026-06-23T01:49:31.091Z",
     "status": "complete",
