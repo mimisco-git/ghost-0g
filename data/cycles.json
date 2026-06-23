@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 21,
+    "timestamp": "2026-06-23T09:00:19.794Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0x184c396e86984008e86b6c319278194d24afd4b568716df260d81cfb3bbe8560",
+    "storageHash": "0x02b7178403b50ff76e76d16c0abaafb7b98dc09afa1688941e7adbf06a65ae9d",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/129878",
+    "chain": {
+      "txHash": "0x6cd3d44ef161facb4f21fe74464d797f5c9afdc993a3d00ebc6713b6012eae21",
+      "blockNumber": 40281903,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "**Intelligence Report: Decentralized Compute for AI Training**\n\nA significant development is the emergence of decentralized compute networks facilitating AI model training. Projects like **Render Network** (RNDR) and **Akash Network** (AKT), while primarily focused on graphics rendering and general cloud compute respectively, are increasingly being leveraged by AI developers for distributed training tasks. This addresses the prohibitive cost and accessibility issues of centralized GPU clusters. By pooling underutilized hardware, these networks offer a more democratized and potentially cost-effective approach to training increasingly complex AI models, reducing reliance on major cloud providers.\n\nGHOST VERDICT: Decentralized compute is unlocking AI innovation for the masses.",
+      "model": "google/gemini-2.5-flash-lite",
+      "inputTok": 56,
+      "outputTok": 134,
+      "latencyMs": 6842
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 20,
     "timestamp": "2026-06-23T05:54:50.843Z",
     "status": "complete",
