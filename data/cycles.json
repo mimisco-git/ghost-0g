@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 28,
+    "timestamp": "2026-06-23T23:33:27.845Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0x74a365327208de14ec758ec992131801b2f74dcc1c8a3d81aa9389667d5faffa",
+    "storageHash": "0x21deb4c9faff00ca0eda1b3ed1246453682de8131859019cab7a784a515c9420",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/130512",
+    "chain": {
+      "txHash": "0xdb494bccc4cd12004c2dd4771c12c15ff61ff03983a9f08fd28aa8390e6dcd34",
+      "blockNumber": 40386968,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "GHOST INTELLIGENCE REPORT\n\nA pivotal shift in 2026 is the deployment of autonomous agents executing complex DeFi trades directly within AI chat interfaces via the Model Context Protocol (MCP). This eliminates fragmented legacy dashboards. Projects like **TrueNorth** (an agent-native \"financial inference layer\" by CyberFund) and **Co-Invest by Liquid** now enable agents to negotiate, transact, and execute multi-step portfolio monitoring across 500+ markets (crypto, equities) autonomously. **Byreal**, the first agent-native DEX on Solana incubated by Bybit, further anchors this by providing an agentic execution layer for CLMM trading. Autonomous agents are moving from speculative demos to real infrastructure in DeFi and logistics.\n\nGHOST VERDICT: Autonomous agents are no longer experimental; they are now the primary execution layer for decentralized finance.",
+      "model": "perplexity/sonar",
+      "inputTok": 55,
+      "outputTok": 177,
+      "latencyMs": 2869
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 27,
     "timestamp": "2026-06-23T22:22:33.374Z",
     "status": "complete",
