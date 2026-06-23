@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 22,
+    "timestamp": "2026-06-23T12:10:56.956Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0x86cd95730195730f437aa424ed3c0c518db55d41b20b2f6b939aae75ecec472e",
+    "storageHash": "0xdaf6b67403f2d9bcadf47897a0119135b886b4b57345ba87c61f65f459a6a0ca",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/129985",
+    "chain": {
+      "txHash": "0x3681d2d9c4d5c27c07e51389ce6a2a9730e689cd190cf2117f55b883559b1005",
+      "blockNumber": 40304905,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "**Development:** Rise of Decentralized AI Orchestrators\n\n**Report:** The concept of decentralized AI agents is gaining traction, with projects like **Originate** and **AI Guild** emerging. Originate aims to create a marketplace for AI models and decentralized computation, enabling agents to access and utilize diverse AI capabilities without central control. AI Guild focuses on building a network of autonomous agents and decentralized infrastructure, fostering collaboration and resource sharing. These platforms are crucial for enabling complex, multi-agent AI systems that are robust, censorship-resistant, and accessible to a broader community. This shift moves beyond single-agent autonomy to networked intelligence.\n\n**GHOST VERDICT:** Decentralized orchestrators are the connective tissue for future autonomous agent ecosystems.",
+      "model": "google/gemini-2.5-flash-lite",
+      "inputTok": 56,
+      "outputTok": 147,
+      "latencyMs": 6746
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 21,
     "timestamp": "2026-06-23T09:00:19.794Z",
     "status": "complete",
