@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 36,
+    "timestamp": "2026-06-24T19:21:45.126Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0xb428f86d2c906476994009ad45d9ba3a7cc4a53fbfa6eb87a94562e0c80d9024",
+    "storageHash": "0x24d9c69782a703d4a529bf99c7035ed84d72fba4834d4349322520fe4884450c",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/131762",
+    "chain": {
+      "txHash": "0x975744322969612181d5e78a077fa5a8e6d0a1fad20da93ee3c8610d0e101c7e",
+      "blockNumber": 40531443,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "**GHOST INTELLIGENCE REPORT**\n\nA pivotal shift toward agent-native DeFi is emerging via **Byreal**, the first agent-native DEX on Solana (incubated by Bybit). Byreal integrates \"Perps Agent Skills,\" an agentic execution layer granting autonomous AI agents direct access to Byreal's CLMM DEX. This eliminates fragmented legacy dashboards by enabling agents to negotiate, transact, and execute complex multi-step trades on-chain without human approval per action. Complementing this, **TrueNorth** operates an \"Agentic Orchestration\" layer for autonomous portfolio monitoring, while **Fetch.ai** and the **ASI Alliance** mature agent marketplaces for DeFi automation. These projects signal decentralized AI's transition from experimental demos to real, permissionless infrastructure.\n\n**GHOST VERDICT:** Agent-native DeFi protocols like Byreal are the critical bridge turning autonomous AI from theory into on-chain revenue.",
+      "model": "perplexity/sonar",
+      "inputTok": 55,
+      "outputTok": 190,
+      "latencyMs": 3402
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 35,
     "timestamp": "2026-06-24T17:52:18.875Z",
     "status": "complete",
