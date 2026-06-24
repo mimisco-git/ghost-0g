@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 37,
+    "timestamp": "2026-06-24T21:02:07.630Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0x6d6d35d39ea053e7e6f9068fe1e7c2e5d0583f4c1670bde51f61118947419454",
+    "storageHash": "0xb59befb5d57b2cbcddc477f4208834d70308b10bb7d24117e636baf0cb35ed2e",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/131988",
+    "chain": {
+      "txHash": "0xf38c43ae5ee02e6ac8e6b8af7e082c81b0042d7742b8e5613b169de5ad9a07e0",
+      "blockNumber": 40543542,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "**GHOST INTELLIGENCE REPORT**\n\nA pivotal development is the emergence of **Bittensor (TAO)** as the leading incentive-driven architecture for permissionless AI model quality. By tokenizing rewards for useful model contributions, Bittensor enables decentralized machine learning at scale. This subnet architecture is now powering experimental frameworks like **Templar**, which pools global GPU resources for AI pre-training, making large-scale model development accessible and resilient. Templar's integration with Bittensor transforms AI from a centralized bottleneck into a distributed, economically incentivized ecosystem, accelerating open innovation across compute and model layers.\n\n**GHOST VERDICT:** Bittensor's tokenized incentive model is the foundational breakthrough making decentralized AI economically viable and permissionless.",
+      "model": "perplexity/sonar",
+      "inputTok": 55,
+      "outputTok": 149,
+      "latencyMs": 3493
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 36,
     "timestamp": "2026-06-24T19:21:45.126Z",
     "status": "complete",
