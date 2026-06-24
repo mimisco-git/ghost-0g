@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 29,
+    "timestamp": "2026-06-24T01:28:06.931Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0xd430c949929265d65cdb8df574ed339e307eaf5aab46c34131ff63f9c503bf85",
+    "storageHash": "0x15ec66d173f034544cc0184f02a39f81f4cdaf8d6caa64035db1c64e8f16ee83",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/130538",
+    "chain": {
+      "txHash": "0xfcab13c095ae1167b5db0dbb7fb4a26fcca05e4d98bf8e8a441359c57987d090",
+      "blockNumber": 40400764,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "**GHOST INTELLIGENCE REPORT**\n\nA pivotal development is the maturation of decentralized AI training via Bittensor’s subnet architecture, enabling permissionless, token-incentivized model pre-training. Projects like **Templar** (launched Nov 2024) aggregate global GPU resources into a marketplace for decentralized AI tasks on Bittensor, while **Nous Research** coordinates distributed training using its DisTrO optimizer. This shifts AI creation from centralized labs to open, resilient networks, reducing costs and enhancing security through Bittensor’s tokenized incentives. **Render Network** further supports this by supplying decentralized GPU compute for inference and training.\n\n**GHOST VERDICT**: Decentralized training via Bittensor subnets is no longer experimental—it is the new infrastructure for open, scalable AI.",
+      "model": "perplexity/sonar",
+      "inputTok": 55,
+      "outputTok": 163,
+      "latencyMs": 3581
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 28,
     "timestamp": "2026-06-23T23:33:27.845Z",
     "status": "complete",
