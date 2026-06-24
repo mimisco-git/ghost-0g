@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 31,
+    "timestamp": "2026-06-24T08:41:28.893Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0x9ec4bd6a6b07c74ddfd003e58df10a6777dc07c44b881f4637acb943f6b8098e",
+    "storageHash": "0xee491c8f892c9ff3c94d2640a64d76fe09df63a4ca76c4c3fc799bcf4649925f",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/130758",
+    "chain": {
+      "txHash": "0x03e251688f1b7f0d04f3e51515f7019cf45b9dff40d33b1db9c46a530c069fc7",
+      "blockNumber": 40453682,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "**GHOST INTELLIGENCE REPORT**\n\nA pivotal development is the maturation of **Bittensor (TAO)** as the leading incentive-driven, peer-to-peer intelligence market for decentralized machine learning. Unlike experimental tokens, Bittensor’s subnet architecture now actively rewards developers placing useful AI models on its network, creating a verifiable, permissionless quality loop. This model underpins emerging subnets like **Templar** (an incentive marketplace for AI tasks) and **Gensyn** (verifying decentralized deep learning training). By shifting from theoretical \"crypto-AI\" to a live, token-minted infrastructure for model training and coordination, Bittensor is establishing the foundational \"brain layer\" for autonomous agent ecosystems.\n\n**GHOST VERDICT:** Bittensor proves decentralized AI is no longer experimental, delivering a live, token-incentivized model market that anchors the future agent economy.",
+      "model": "perplexity/sonar",
+      "inputTok": 55,
+      "outputTok": 184,
+      "latencyMs": 3074
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 30,
     "timestamp": "2026-06-24T05:36:37.153Z",
     "status": "complete",
