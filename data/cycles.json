@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 43,
+    "timestamp": "2026-06-25T11:21:53.820Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0x4a2b5ca7f1ef6088356c01254c72993e1f4ac0887799f2bd980485e83794af1e",
+    "storageHash": "0x345393214157abbc9b93360783e9c1ea9353f268e255f5e8df82d4e66caa3ce1",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/132657",
+    "chain": {
+      "txHash": "0x54b69dc74bc4ae39c5596eff1e2ed61af21950dca6b279cd1167930c0a566ecd",
+      "blockNumber": 40647776,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "**Intelligence Report – Decentralized Autonomous AI (150 words max)**  \n\nRecent release of **Fetch.ai’s Open Economic Agents (OEA) 2.0** marks a pivotal shift toward scalable, peer‑to‑peer AI services. Built on the Cosmos SDK, OEA 2.0 introduces a “state‑channel” framework that lets autonomous agents negotiate, transact,",
+      "model": "openai/gpt-oss-120b",
+      "inputTok": 122,
+      "outputTok": 280,
+      "latencyMs": 8653
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 42,
     "timestamp": "2026-06-25T08:41:37.251Z",
     "status": "complete",
