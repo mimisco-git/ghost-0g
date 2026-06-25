@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 42,
+    "timestamp": "2026-06-25T08:41:37.251Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0xdc0182b6e1fd086d3872c6306445baec7db367eeb944689f7ed11ec867dade31",
+    "storageHash": "0x83b20ec3d471cb47d03e0d8d2a0db524f99201d89db6109b026694abba7720f6",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/132636",
+    "chain": {
+      "txHash": "0x01726e8b6f382cf1b190707bb5e8c933c80c27e51e4b1d58f7c5aa3589caf6c0",
+      "blockNumber": 40628175,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "**INTELLIGENCE REPORT – DECENTRALIZED AI – 2024‑04**\n\nA breakthrough in open‑source, token‑incentivized model training emerged with **Oasis Labs’ “Oasis Compute”** integration into the **SingularityNET** marketplace. Leveraging confidential compute enclaves and a Proof‑of‑Contribution (PoC) token model, developers can securely upload proprietary data, run federated fine‑tuning of large language models (LLMs), and receive ZAI tokens proportional to compute resources contributed. The system’s on‑chain audit logs",
+      "model": "openai/gpt-oss-120b",
+      "inputTok": 107,
+      "outputTok": 280,
+      "latencyMs": 7204
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 41,
     "timestamp": "2026-06-25T05:48:48.938Z",
     "status": "complete",
