@@ -1,5 +1,30 @@
 [
   {
+    "cycle": 50,
+    "timestamp": "2026-06-29T19:26:26.692Z",
+    "status": "complete",
+    "human_authorized": false,
+    "contentHash": "0xd64a2a5d31960b7915937964f1da49cae3785589a9148b0872b141bf75e51ac5",
+    "storageHash": "0x020e1507727f4cd39c2778b48a97b216718bfc2d04fd73fda895d009fdc40b6d",
+    "storageUrl": "https://storagescan-galileo.0g.ai/submission/134167",
+    "chain": {
+      "txHash": "0x69d91ebca7b70ae91c27454bb1b7802be30e6efc7c8cab0159a8caeef01ff178",
+      "blockNumber": 41403925,
+      "contract": "0x58282264D3e65F3026014026DFb2f428E141A0Bd",
+      "method": "GhostAnchor.anchor()"
+    },
+    "compute": {
+      "output": "",
+      "model": "openai/gpt-oss-120b",
+      "inputTok": 118,
+      "outputTok": 100,
+      "latencyMs": 2005
+    },
+    "wallet": {
+      "address": "0xD0405c14e6c8e58aa11Ad19BEC20C8c47086ed40"
+    }
+  },
+  {
     "cycle": 49,
     "timestamp": "2026-06-29T17:45:05.164Z",
     "status": "complete",
