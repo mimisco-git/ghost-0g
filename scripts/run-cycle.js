@@ -84,7 +84,7 @@ async function main() {
     body: JSON.stringify({
       model: 'openrouter/auto',
       messages: [{ role: 'user', content: TASK }],
-      max_tokens: 280,
+      max_tokens: 100,
     }),
   });
 
